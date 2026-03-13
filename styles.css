@@ -1248,8 +1248,15 @@ a {
         align-items: flex-start;
     }
 
-    .card-meta,
-    .plugin-stats,
+    .card-meta {
+        width: auto;
+    }
+
+    .plugin-stats {
+        width: auto;
+        flex-wrap: nowrap;
+    }
+
     .card-secondary-links {
         width: 100%;
     }
