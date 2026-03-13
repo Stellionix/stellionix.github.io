@@ -3,6 +3,9 @@ const updatedElement = document.getElementById("stats-updated");
 const statElements = Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
 const heroElement = document.querySelector(".hero");
 const downloadMenus = Array.from(document.querySelectorAll(".download-menu"));
+const siteHeader = document.querySelector(".site-header");
+const navToggle = document.querySelector(".nav-toggle");
+const siteNav = document.querySelector("#site-nav");
 
 function formatNumber(value) {
     return `~${Number(value || 0).toLocaleString("en-US")} downloads`;
@@ -245,5 +248,46 @@ function setupDownloadMenus() {
     });
 }
 
+function setupMobileNav() {
+    if (!siteHeader || !navToggle || !siteNav) {
+        return;
+    }
+
+    function closeNav() {
+        siteHeader.classList.remove("nav-open");
+        navToggle.setAttribute("aria-expanded", "false");
+    }
+
+    navToggle.addEventListener("click", () => {
+        const isOpen = siteHeader.classList.toggle("nav-open");
+        navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    siteNav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            closeNav();
+        });
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!siteHeader.contains(event.target)) {
+            closeNav();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeNav();
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 640) {
+            closeNav();
+        }
+    });
+}
+
+setupMobileNav();
 setupDownloadMenus();
 setupHeroParallax();

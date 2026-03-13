@@ -126,6 +126,64 @@ a {
     color: var(--accent);
 }
 
+.nav-toggle {
+    display: none;
+    position: relative;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid rgba(87, 217, 255, 0.16);
+    border-radius: 14px;
+    background: rgba(87, 217, 255, 0.08);
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: border-color 0.22s ease, background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.nav-toggle:hover {
+    transform: translateY(-1px);
+    border-color: rgba(87, 217, 255, 0.26);
+    background: rgba(87, 217, 255, 0.12);
+    box-shadow: 0 10px 18px rgba(87, 217, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.nav-toggle span {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    transition: transform 0.24s ease, opacity 0.2s ease, top 0.24s ease;
+}
+
+.nav-toggle span:nth-child(1) {
+    top: 15px;
+}
+
+.nav-toggle span:nth-child(2) {
+    top: 22px;
+}
+
+.nav-toggle span:nth-child(3) {
+    top: 29px;
+}
+
+.site-header.nav-open .nav-toggle span:nth-child(1) {
+    top: 22px;
+    transform: rotate(45deg);
+}
+
+.site-header.nav-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.site-header.nav-open .nav-toggle span:nth-child(3) {
+    top: 22px;
+    transform: rotate(-45deg);
+}
+
 .hero {
     position: relative;
     isolation: isolate;
@@ -235,8 +293,8 @@ a {
 }
 
 .button-secondary {
-    border-color: rgba(133, 88, 255, 0.24);
-    background: rgba(133, 88, 255, 0.08);
+    border-color: rgba(133, 88, 255, 0.4);
+    background: rgba(133, 88, 255, 0.22);
     color: var(--text);
 }
 
@@ -808,17 +866,30 @@ a {
 
 @media (max-width: 960px) {
     .site-header {
-        position: static;
+        position: relative;
+        z-index: 30;
     }
 
     .header-inner {
-        width: min(100% - 20px, 1280px);
+        position: relative;
+        width: 100%;
+        padding-inline: 20px;
+        gap: 16px;
     }
 
     .hero {
         grid-template-columns: 1fr;
         min-height: auto;
+        gap: 24px;
         padding-top: 16px;
+    }
+
+    .hero::before {
+        inset: -12px -20px;
+    }
+
+    .hero-panel {
+        min-height: auto;
     }
 
     .cards,
@@ -831,6 +902,10 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .section-head {
+        gap: 12px;
+    }
 }
 
 @media (max-width: 640px) {
@@ -838,28 +913,315 @@ a {
         width: min(100% - 20px, 1180px);
     }
 
+    .nav-toggle {
+        display: block;
+    }
+
     .nav {
-        display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 16px;
+        right: 16px;
+        z-index: 40;
+        display: grid;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 18px;
+        background: rgba(9, 17, 33, 0.96);
+        border: 1px solid rgba(87, 217, 255, 0.14);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px) scale(0.98);
+        transform-origin: top right;
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.28s ease;
+    }
+
+    .site-header.nav-open .nav {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .nav a {
+        display: flex;
+        align-items: center;
+        min-height: 42px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .nav a:hover {
+        background: rgba(87, 217, 255, 0.08);
+        border-color: rgba(87, 217, 255, 0.14);
     }
 
     .brand-mark {
-        width: 52px;
-        height: 52px;
+        width: 46px;
+        height: 46px;
     }
 
     .brand-subtitle {
         display: none;
     }
 
+    .brand {
+        gap: 12px;
+        letter-spacing: 0.14em;
+    }
+
+    .brand-title {
+        font-size: 0.95rem;
+    }
+
+    .hero {
+        gap: 20px;
+        padding: 12px 0 52px;
+        justify-items: center;
+    }
+
+    .hero::before {
+        inset: -8px -12px;
+        background-position: center top;
+    }
+
+    .hero-copy {
+        text-align: center;
+    }
+
+    .eyebrow {
+        padding: 7px 12px;
+        font-size: 0.64rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 18px;
+        justify-content: center;
+    }
+
     .hero h1 {
-        font-size: clamp(2.7rem, 18vw, 4.3rem);
+        font-size: clamp(2.45rem, 15vw, 3.8rem);
+        line-height: 0.96;
+    }
+
+    .hero p {
+        margin-top: 18px;
+        font-size: 0.98rem;
+        line-height: 1.65;
+    }
+
+    .actions {
+        justify-content: center;
     }
 
     .hero-panel {
-        min-height: 420px;
+        width: 100%;
+        padding: 20px 16px 16px;
+        border-radius: 24px;
+    }
+
+    .hero-panel::before {
+        width: 120px;
+        height: 120px;
+        top: 24px;
+        right: 20px;
+    }
+
+    .hero-panel::after {
+        width: 180px;
+        height: 180px;
+        left: -40px;
+        bottom: -60px;
+    }
+
+    .panel-content {
+        gap: 12px;
+    }
+
+    .metric-card,
+    .info-card {
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .metric-card strong {
+        font-size: 1.9rem;
+    }
+
+    .metric-card span,
+    .info-card span {
+        font-size: 0.88rem;
+    }
+
+    .section {
+        padding: 18px 0 52px;
+    }
+
+    .section-head h2 {
+        font-size: clamp(1.7rem, 10vw, 2.3rem);
+    }
+
+    .section-head p {
+        max-width: none;
+        line-height: 1.65;
+    }
+
+    .card {
+        gap: 14px;
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .card-header {
+        gap: 10px;
+        margin: -18px -18px 6px;
+        padding: 14px 14px 12px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .card h3 {
+        font-size: 1.12rem;
+        gap: 8px;
+    }
+
+    .card h3::before {
+        width: 6px;
+        height: 6px;
+    }
+
+    .card-meta {
+        gap: 8px;
+        justify-content: flex-start;
+    }
+
+    .game-badge,
+    .price-badge,
+    .plugin-stat {
+        padding: 7px 10px;
+    }
+
+    .game-badge,
+    .price-badge {
+        font-size: 0.72rem;
+    }
+
+    .plugin-stat-value {
+        font-size: 0.74rem;
+    }
+
+    .plugin-stat-label {
+        font-size: 0.66rem;
+    }
+
+    .plugin-logo-wrap {
+        min-height: 118px;
+        padding: 18px 16px;
+        border-radius: 16px;
+    }
+
+    .plugin-logo {
+        height: 74px;
+    }
+
+    .card:nth-child(1) .plugin-logo,
+    .card:nth-child(5) .plugin-logo,
+    .card:nth-child(6) .plugin-logo,
+    .card:nth-child(7) .plugin-logo {
+        height: 68px;
+    }
+
+    .card p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .card-secondary-links {
+        width: 100%;
+    }
+
+    .card-secondary-link {
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        min-height: 36px;
+        padding: 8px 10px;
+    }
+
+    .download-menu {
+        width: 100%;
+    }
+
+    .download-button {
+        width: 100%;
+        min-height: 42px;
+    }
+
+    .download-menu-list {
+        left: 0;
+        right: 0;
+        min-width: 0;
     }
 
     .button {
         width: 100%;
+        min-width: 0;
+    }
+
+    .actions {
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .footer {
+        padding: 24px 0 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        width: min(100% - 16px, 1180px);
+    }
+
+    .header-inner {
+        padding-inline: 16px;
+    }
+
+    .nav {
+        left: 12px;
+        right: 12px;
+    }
+
+    .hero h1 {
+        font-size: clamp(2.2rem, 14vw, 3.2rem);
+    }
+
+    .eyebrow {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-header {
+        align-items: flex-start;
+    }
+
+    .card-meta,
+    .plugin-stats,
+    .card-secondary-links {
+        width: 100%;
+    }
+
+    .card-secondary-link {
+        width: 100%;
+    }
+
+    .download-menu-link {
+        padding: 10px 11px;
     }
 }
