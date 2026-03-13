@@ -8,7 +8,7 @@ const navToggle = document.querySelector(".nav-toggle");
 const siteNav = document.querySelector("#site-nav");
 
 function formatNumber(value) {
-    return `~${Number(value || 0).toLocaleString("en-US")} downloads`;
+    return `~${Number(value || 0).toLocaleString("en-US")}`;
 }
 
 function formatStatNumber(value) {
@@ -76,7 +76,7 @@ async function hydrateStat(element) {
     const source = element.dataset.statSource;
     const secondarySource = element.dataset.statSourceSecondary;
     const valueElement = element.querySelector(".plugin-stat-value");
-    const label = element.querySelector(".plugin-stat-label")?.textContent?.trim().toLowerCase() ?? "";
+    const statKind = element.dataset.statKind ?? "";
 
     if (!source || !valueElement) {
         return { value: 0, contributesToTotal: false };
@@ -94,11 +94,11 @@ async function hydrateStat(element) {
     }));
     const value = responses.reduce((sum, svgText) => sum + extractBadgeValue(svgText), 0);
 
-    animateNumber(valueElement, value, label.includes("stars") ? 650 : 850, formatStatNumber);
+    animateNumber(valueElement, value, statKind === "stars" ? 650 : 850, formatStatNumber);
 
     return {
         value,
-        contributesToTotal: label === "downloads"
+        contributesToTotal: statKind === "downloads"
     };
 }
 
