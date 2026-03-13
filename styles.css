@@ -215,6 +215,15 @@ a {
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
+.external-link-icon {
+    width: 14px;
+    height: 14px;
+    display: block;
+    flex: 0 0 14px;
+    margin-left: auto;
+    opacity: 0.82;
+}
+
 .button:hover {
     transform: translateY(-2px);
 }
@@ -402,9 +411,86 @@ a {
     height: 76px;
 }
 
+.card-header {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: -26px -26px 8px;
+    padding: 16px 18px;
+    border-radius: 24px 24px 0 0;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+        linear-gradient(135deg, rgba(87, 217, 255, 0.08), rgba(133, 88, 255, 0.06));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 14px 30px rgba(0, 0, 0, 0.14);
+}
+
 .card h3 {
-    margin: 0 0 12px;
+    margin: 0;
     font-size: 1.35rem;
+}
+
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.game-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(82, 165, 53, 0.12);
+    border: 1px solid rgba(136, 216, 106, 0.22);
+    color: #d9f7ce;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.price-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(87, 217, 255, 0.12);
+    border: 1px solid rgba(87, 217, 255, 0.22);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.price-badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: rgba(87, 217, 255, 0.16);
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.game-badge-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 auto;
 }
 
 .card p {
@@ -420,9 +506,12 @@ a {
 }
 
 .plugin-stat {
-    min-width: 118px;
-    padding: 12px 14px;
-    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px 12px;
+    border-radius: 999px;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
         rgba(9, 17, 33, 0.72);
@@ -431,68 +520,180 @@ a {
 }
 
 .plugin-stat-value {
-    display: block;
-    font-size: 1rem;
+    display: inline-block;
+    font-size: 0.8rem;
     font-weight: 800;
     line-height: 1.1;
     color: var(--text);
 }
 
 .plugin-stat-label {
-    display: block;
-    margin-top: 4px;
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
 }
 
-.card-actions {
+.card-footer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
     margin-top: auto;
     padding-top: 8px;
 }
 
-.card-link {
+.card-secondary-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-secondary-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card-secondary-link:hover {
+    transform: translateY(-2px);
+    color: var(--text);
+    background: rgba(87, 217, 255, 0.08);
+    border-color: rgba(87, 217, 255, 0.16);
+    box-shadow: 0 10px 20px rgba(87, 217, 255, 0.08), 0 0 0 1px rgba(216, 246, 255, 0.04) inset;
+}
+
+.download-menu {
     position: relative;
+}
+
+.download-menu[open] {
+    z-index: 2;
+}
+
+.download-menu.is-open,
+.download-menu.is-closing {
+    z-index: 2;
+}
+
+.download-button {
+    position: relative;
+    list-style: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 42px;
+    min-height: 44px;
     padding: 10px 16px;
     border-radius: 999px;
-    border: 1px solid rgba(133, 88, 255, 0.22);
-    background: rgba(133, 88, 255, 0.08);
+    border: 1px solid rgba(87, 217, 255, 0.24);
+    background: rgba(87, 217, 255, 0.1);
     color: var(--text);
     font-size: 0.88rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
     overflow: hidden;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease, box-shadow 0.24s ease;
 }
 
-.card-link::before {
+.download-button::-webkit-details-marker {
+    display: none;
+}
+
+.download-button::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.16) 50%, transparent 80%);
+    background: linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.16) 48%, transparent 78%);
     transform: translateX(-140%);
-    transition: transform 0.5s ease;
+    transition: transform 0.55s ease;
     pointer-events: none;
 }
 
-.card-link:hover {
+.download-button:hover,
+.download-menu.is-open .download-button,
+.download-menu.is-closing .download-button {
     transform: translateY(-3px) scale(1.02);
-    border-color: rgba(87, 217, 255, 0.34);
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    border-color: rgba(87, 217, 255, 0.38);
+    background: rgba(87, 217, 255, 0.14);
+    box-shadow: 0 14px 28px rgba(87, 217, 255, 0.18), 0 0 0 1px rgba(216, 246, 255, 0.1) inset;
 }
 
-.card-link:hover::before {
+.download-button:hover::before,
+.download-menu.is-open .download-button::before,
+.download-menu.is-closing .download-button::before {
     transform: translateX(140%);
+}
+
+.download-button-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 18px;
+}
+
+.download-menu-list {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    display: grid;
+    gap: 8px;
+    min-width: 190px;
+    padding: 12px;
+    border-radius: 18px;
+    background: rgba(9, 17, 33, 0.96);
+    border: 1px solid rgba(87, 217, 255, 0.16);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px) scale(0.96);
+    transform-origin: bottom right;
+    pointer-events: none;
+    transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s ease;
+}
+
+.download-menu.is-open .download-menu-list,
+.download-menu.is-closing .download-menu-list {
+    visibility: visible;
+}
+
+.download-menu.is-open .download-menu-list {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.download-menu-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding: 9px 12px;
+    border-radius: 14px;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: background 0.24s ease, border-color 0.24s ease, transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.download-menu-link:hover {
+    transform: translateY(-2px);
+    background: rgba(87, 217, 255, 0.1);
+    border-color: rgba(87, 217, 255, 0.18);
+    box-shadow: 0 10px 20px rgba(87, 217, 255, 0.1), 0 0 0 1px rgba(216, 246, 255, 0.05) inset;
 }
 
 .link-icon,
@@ -526,70 +727,6 @@ a {
     padding: 3px;
 }
 
-.card-link-bukkit {
-    border-color: rgba(255, 178, 72, 0.28);
-    background: rgba(255, 178, 72, 0.1);
-}
-
-.card-link-bukkit .link-icon {
-    background: linear-gradient(135deg, #ffb248, #ffd28b);
-}
-
-.card-link-curseforge {
-    border-color: rgba(255, 120, 64, 0.28);
-    background: rgba(255, 120, 64, 0.1);
-}
-
-.card-link-curseforge .link-icon {
-    background: linear-gradient(135deg, #ff7840, #ffb36f);
-}
-
-.card-link-modrinth {
-    border-color: rgba(104, 221, 120, 0.28);
-    background: rgba(104, 221, 120, 0.1);
-}
-
-.card-link-modrinth .link-icon {
-    background: linear-gradient(135deg, #68dd78, #b6ff96);
-}
-
-.card-link-github {
-    border-color: rgba(196, 202, 222, 0.2);
-    background: rgba(196, 202, 222, 0.08);
-}
-
-.card-link-github .link-icon {
-    background: linear-gradient(135deg, #c4cade, #ffffff);
-}
-
-.card-link-docs {
-    border-color: rgba(87, 217, 255, 0.24);
-    background: rgba(87, 217, 255, 0.08);
-}
-
-.card-link-docs .link-icon {
-    background: linear-gradient(135deg, var(--accent), var(--glow));
-}
-
-.card-link-bukkit:hover {
-    box-shadow: 0 14px 28px rgba(255, 178, 72, 0.18), 0 0 0 1px rgba(255, 214, 143, 0.12) inset;
-}
-
-.card-link-curseforge:hover {
-    box-shadow: 0 14px 28px rgba(255, 120, 64, 0.18), 0 0 0 1px rgba(255, 179, 138, 0.12) inset;
-}
-
-.card-link-modrinth:hover {
-    box-shadow: 0 14px 28px rgba(104, 221, 120, 0.18), 0 0 0 1px rgba(182, 255, 150, 0.12) inset;
-}
-
-.card-link-github:hover {
-    box-shadow: 0 14px 28px rgba(196, 202, 222, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-}
-
-.card-link-docs:hover {
-    box-shadow: 0 14px 28px rgba(87, 217, 255, 0.18), 0 0 0 1px rgba(216, 246, 255, 0.12) inset;
-}
 
 @keyframes card-enter {
     from {
@@ -614,6 +751,8 @@ a {
 
 .footer a {
     color: var(--accent);
+    display: inline-flex;
+    align-items: center;
 }
 
 @media (max-width: 960px) {

@@ -2,9 +2,14 @@ const totalElement = document.getElementById("downloads-total");
 const updatedElement = document.getElementById("stats-updated");
 const statElements = Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
 const heroElement = document.querySelector(".hero");
+const downloadMenus = Array.from(document.querySelectorAll(".download-menu"));
 
 function formatNumber(value) {
-    return `~${Number(value || 0).toLocaleString("en-US")} times`;
+    return `~${Number(value || 0).toLocaleString("en-US")} downloads`;
+}
+
+function formatStatNumber(value) {
+    return `~${Number(value || 0).toLocaleString("en-US")}`;
 }
 
 function parseCompactNumber(rawValue) {
@@ -42,7 +47,7 @@ function extractBadgeValue(svgText) {
     return parseCompactNumber(numberMatch[1]);
 }
 
-function animateNumber(element, targetValue, duration = 900) {
+function animateNumber(element, targetValue, duration = 900, formatter = formatNumber) {
     if (!element || !Number.isFinite(targetValue)) {
         return;
     }
@@ -54,7 +59,7 @@ function animateNumber(element, targetValue, duration = 900) {
         const eased = 1 - Math.pow(1 - progress, 3);
         const currentValue = Math.round(targetValue * eased);
 
-        element.textContent = formatNumber(currentValue);
+        element.textContent = formatter(currentValue);
 
         if (progress < 1) {
             requestAnimationFrame(frame);
@@ -66,6 +71,7 @@ function animateNumber(element, targetValue, duration = 900) {
 
 async function hydrateStat(element) {
     const source = element.dataset.statSource;
+    const secondarySource = element.dataset.statSourceSecondary;
     const valueElement = element.querySelector(".plugin-stat-value");
     const label = element.querySelector(".plugin-stat-label")?.textContent?.trim().toLowerCase() ?? "";
 
@@ -73,20 +79,23 @@ async function hydrateStat(element) {
         return { value: 0, contributesToTotal: false };
     }
 
-    const response = await fetch(source);
+    const sources = [source, secondarySource].filter(Boolean);
+    const responses = await Promise.all(sources.map(async (currentSource) => {
+        const response = await fetch(currentSource);
 
-    if (!response.ok) {
-        throw new Error(`Failed to load badge: ${source}`);
-    }
+        if (!response.ok) {
+            throw new Error(`Failed to load badge: ${currentSource}`);
+        }
 
-    const svgText = await response.text();
-    const value = extractBadgeValue(svgText);
+        return response.text();
+    }));
+    const value = responses.reduce((sum, svgText) => sum + extractBadgeValue(svgText), 0);
 
-    animateNumber(valueElement, value, label.includes("stars") ? 650 : 850);
+    animateNumber(valueElement, value, label.includes("stars") ? 650 : 850, formatStatNumber);
 
     return {
         value,
-        contributesToTotal: label === "downloads" || label === "modrinth"
+        contributesToTotal: label === "downloads"
     };
 }
 
@@ -168,4 +177,73 @@ function setupHeroParallax() {
     requestUpdate();
 }
 
+function setupDownloadMenus() {
+    if (!downloadMenus.length) {
+        return;
+    }
+
+    const closeDelayMs = 380;
+
+    function closeMenu(menu) {
+        if (!menu.open) {
+            menu.classList.remove("is-open");
+            menu.classList.remove("is-closing");
+            return;
+        }
+
+        menu.classList.remove("is-open");
+        menu.classList.add("is-closing");
+        window.setTimeout(() => {
+            menu.open = false;
+            menu.classList.remove("is-closing");
+        }, closeDelayMs);
+    }
+
+    downloadMenus.forEach((menu) => {
+        const summary = menu.querySelector(".download-button");
+        if (!summary) {
+            return;
+        }
+
+        summary.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const isOpening = !menu.open;
+            downloadMenus.forEach((otherMenu) => {
+                if (otherMenu !== menu) {
+                    closeMenu(otherMenu);
+                }
+            });
+
+            if (isOpening) {
+                menu.classList.remove("is-closing");
+                menu.open = true;
+                requestAnimationFrame(() => {
+                    menu.classList.add("is-open");
+                });
+                return;
+            }
+
+            closeMenu(menu);
+        });
+    });
+
+    document.addEventListener("click", (event) => {
+        downloadMenus.forEach((menu) => {
+            if (!menu.contains(event.target)) {
+                closeMenu(menu);
+            }
+        });
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") {
+            return;
+        }
+
+        downloadMenus.forEach(closeMenu);
+    });
+}
+
+setupDownloadMenus();
 setupHeroParallax();
