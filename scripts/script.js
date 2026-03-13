@@ -1,9 +1,10 @@
 const totalElement = document.getElementById("downloads-total");
 const updatedElement = document.getElementById("stats-updated");
 const statElements = Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
+const heroElement = document.querySelector(".hero");
 
 function formatNumber(value) {
-    return `~${Number(value || 0).toLocaleString("en-US")}`;
+    return `~${Number(value || 0).toLocaleString("en-US")} times`;
 }
 
 function parseCompactNumber(rawValue) {
@@ -113,7 +114,7 @@ async function hydrateStats() {
     }
 
     if (updatedElement) {
-        updatedElement.textContent = `Live badge data - ${new Date().toLocaleDateString("en-US", {
+        updatedElement.textContent = `Live data - ${new Date().toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric"
@@ -127,6 +128,44 @@ hydrateStats().catch(() => {
     }
 
     if (updatedElement) {
-        updatedElement.textContent = "Live badge data unavailable";
+        updatedElement.textContent = "Live data unavailable";
     }
 });
+
+function setupHeroParallax() {
+    if (!heroElement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+    }
+
+    let ticking = false;
+
+    function updateParallax() {
+        const rect = heroElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        if (rect.bottom <= 0 || rect.top >= viewportHeight) {
+            document.documentElement.style.setProperty("--hero-parallax-offset", "0px");
+            ticking = false;
+            return;
+        }
+
+        const offset = Math.max(-52, Math.min(52, rect.top * -0.18));
+        document.documentElement.style.setProperty("--hero-parallax-offset", `${offset.toFixed(2)}px`);
+        ticking = false;
+    }
+
+    function requestUpdate() {
+        if (ticking) {
+            return;
+        }
+
+        ticking = true;
+        requestAnimationFrame(updateParallax);
+    }
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    requestUpdate();
+}
+
+setupHeroParallax();

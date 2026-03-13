@@ -11,6 +11,7 @@
     --violet-soft: #b07cff;
     --glow: #d8f6ff;
     --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+    --hero-parallax-offset: 0px;
 }
 
 * {
@@ -74,7 +75,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 0;
+    padding: 12px 0;
 }
 
 .brand {
@@ -87,8 +88,8 @@ a {
 }
 
 .brand-mark {
-    width: 62px;
-    height: 62px;
+    width: 52px;
+    height: 52px;
     display: block;
     object-fit: contain;
     filter: drop-shadow(0 0 20px rgba(87, 217, 255, 0.18));
@@ -127,12 +128,25 @@ a {
 
 .hero {
     position: relative;
+    isolation: isolate;
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: 32px;
     align-items: center;
-    min-height: calc(100vh - 88px);
+    min-height: calc(100vh - 76px);
     padding: 40px 0 72px;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: -24px -48px;
+    z-index: 0;
+    background: url("assets/hero-galaxy.png") center center / cover no-repeat;
+    opacity: 0.5;
+    transform: translate3d(0, var(--hero-parallax-offset), 0) scale(1.08);
+    will-change: transform;
+    pointer-events: none;
 }
 
 .hero-copy {
@@ -219,7 +233,10 @@ a {
 
 .hero-panel {
     position: relative;
+    display: flex;
+    align-items: flex-end;
     min-height: 520px;
+    padding: 40px 28px 28px;
     border-radius: 30px;
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 42%),
@@ -255,9 +272,9 @@ a {
 }
 
 .panel-content {
-    position: absolute;
-    inset: auto 28px 28px 28px;
+    position: relative;
     display: grid;
+    width: 100%;
     gap: 16px;
 }
 
