@@ -91,8 +91,65 @@
                     </p>
                 </div>
 
-                <div class="cards">
-                    <article class="card">
+                <div class="projects-layout">
+                    <aside class="filters-panel">
+                        <div class="filters-panel-head">
+                            <strong>Filters</strong>
+                            <button class="filters-reset" type="button" id="filters-reset">Reset</button>
+                        </div>
+
+                        <form class="filters-form" id="projects-filters">
+                            <fieldset class="filter-group">
+                                <legend>Server Platform</legend>
+                                <label class="filter-option"><input type="checkbox" name="compatibility" value="bukkit"><img class="filter-option-icon" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></label>
+                                <label class="filter-option"><input type="checkbox" name="compatibility" value="spigot"><img class="filter-option-icon" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></label>
+                                <label class="filter-option"><input type="checkbox" name="compatibility" value="paper"><img class="filter-option-icon" src="assets/platform-paper.svg" alt=""><span>Paper</span></label>
+                                <label class="filter-option"><input type="checkbox" name="compatibility" value="purpur"><img class="filter-option-icon" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></label>
+                                <label class="filter-option"><input type="checkbox" name="compatibility" value="folia"><img class="filter-option-icon" src="assets/platform-folia.svg" alt=""><span>Folia</span></label>
+                            </fieldset>
+
+                            <fieldset class="filter-group">
+                                <legend>Game</legend>
+                                <div class="filter-dropdown" data-filter-dropdown>
+                                    <input type="hidden" id="filter-game" name="game" value="">
+                                    <button class="filter-select-wrap" type="button" data-filter-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="filter-game-options">
+                                    <span class="filter-select-icon-wrap"><img class="filter-select-icon" src="assets/game-minecraft.svg" alt=""></span>
+                                        <span class="filter-select-label" data-filter-label>All games</span>
+                                    </button>
+                                    <div class="filter-dropdown-menu" id="filter-game-options" role="listbox">
+                                        <button class="filter-dropdown-option is-selected" type="button" role="option" data-filter-option data-value="" aria-selected="true"><span>All games</span></button>
+                                        <button class="filter-dropdown-option" type="button" role="option" data-filter-option data-value="minecraft" aria-selected="false"><img class="filter-dropdown-option-icon" src="assets/game-minecraft.svg" alt=""><span>Minecraft</span></button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="filter-group">
+                                <legend>Price</legend>
+                                <div class="filter-dropdown" data-filter-dropdown>
+                                    <input type="hidden" id="filter-price" name="price" value="">
+                                    <button class="filter-select-wrap" type="button" data-filter-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="filter-price-options">
+                                    <span class="filter-select-price-icon" aria-hidden="true">$</span>
+                                        <span class="filter-select-label" data-filter-label>All prices</span>
+                                    </button>
+                                    <div class="filter-dropdown-menu" id="filter-price-options" role="listbox">
+                                        <button class="filter-dropdown-option is-selected" type="button" role="option" data-filter-option data-value="" aria-selected="true"><span>All prices</span></button>
+                                        <button class="filter-dropdown-option" type="button" role="option" data-filter-option data-value="free" aria-selected="false"><span class="filter-dropdown-price-mark" aria-hidden="true">$</span><span>Free</span></button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="filter-group">
+                                <legend>Download Platform</legend>
+                                <label class="filter-option"><input type="checkbox" name="downloads" value="modrinth"><img class="filter-option-icon" src="assets/platform-modrinth.ico" alt=""><span>Modrinth</span></label>
+                                <label class="filter-option"><input type="checkbox" name="downloads" value="curseforge"><img class="filter-option-icon" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span></label>
+                                <label class="filter-option"><input type="checkbox" name="downloads" value="bukkit"><img class="filter-option-icon" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></label>
+                            </fieldset>
+                        </form>
+                    </aside>
+
+                    <div class="cards-wrap">
+                        <div class="cards">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur,folia" data-downloads="modrinth,curseforge,bukkit">
                         <div class="card-header">
                             <h3>Deadchest</h3>
                             <div class="card-meta">
@@ -118,17 +175,29 @@
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/Deadchest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                                 <a class="card-secondary-link" href="https://stellionix.github.io/Deadchest/" target="_blank" rel="noreferrer"><img class="link-icon-image link-icon-docs" src="assets/platform-docs.svg" alt=""><span>Docs</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://modrinth.com/plugin/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-modrinth.ico" alt=""><span>Modrinth</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                        <span class="menu-item compatibility-item platform-folia"><img class="compatibility-icon-image" src="assets/platform-folia.svg" alt=""><span>Folia</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://modrinth.com/plugin/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-modrinth.ico" alt=""><span>Modrinth</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/dead-chest" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>SpawnerSilk</h3>
                             <div class="card-meta">
@@ -154,17 +223,28 @@
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/SpawnerSilk" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                                 <a class="card-secondary-link" href="https://stellionix.github.io/SpawnerSilk/" target="_blank" rel="noreferrer"><img class="link-icon-image link-icon-docs" src="assets/platform-docs.svg" alt=""><span>Docs</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/spawnersilk" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/spawnersilk" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/spawnersilk" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/spawnersilk" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
 
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>MobsManager</h3>
                             <div class="card-meta">
@@ -190,17 +270,28 @@
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/MobsManager" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                                 <a class="card-secondary-link" href="https://stellionix.github.io/MobsManager/" target="_blank" rel="noreferrer"><img class="link-icon-image link-icon-docs" src="assets/platform-docs.svg" alt=""><span>Docs</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/mobsmanager" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/mobsmanager" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/mobsmanager" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/mobsmanager" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
 
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>CreatureCapture</h3>
                             <div class="card-meta">
@@ -225,17 +316,28 @@
                             <div class="card-secondary-links">
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/CreatureCapture" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/creaturecapture" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/creaturecapture" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/creaturecapture" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/creaturecapture" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
 
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>RedStoneMe</h3>
                             <div class="card-meta">
@@ -260,17 +362,28 @@
                             <div class="card-secondary-links">
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/RedStoneMe" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/redstoneme" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/redstoneme" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/redstoneme" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/redstoneme" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
 
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>Cubeball</h3>
                             <div class="card-meta">
@@ -295,17 +408,28 @@
                             <div class="card-secondary-links">
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/Cubeball" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/cubeball" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/cubeball" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/cubeball" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/cubeball" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
 
-                    <article class="card">
+                    <article class="card" data-game="minecraft" data-price="free" data-compatibility="bukkit,spigot,paper,purpur" data-downloads="curseforge,bukkit">
                         <div class="card-header">
                             <h3>MendingEnchant</h3>
                             <div class="card-meta">
@@ -330,15 +454,29 @@
                             <div class="card-secondary-links">
                                 <a class="card-secondary-link" href="https://github.com/Stellionix/MendingEnchant" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-github.png" alt=""><span>GitHub</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
                             </div>
-                            <details class="download-menu">
-                                <summary class="download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                                <div class="download-menu-list">
-                                    <a class="download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/mendingenchant" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
-                                    <a class="download-menu-link" href="https://dev.bukkit.org/projects/mendingenchant" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                            <div class="card-action-menus">
+                                <div class="compatibility-menu">
+                                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                                    <div class="menu-list compatibility-menu-list">
+                                        <span class="menu-item compatibility-item platform-bukkit"><img class="compatibility-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></span>
+                                        <span class="menu-item compatibility-item platform-spigot"><img class="compatibility-icon-image" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></span>
+                                        <span class="menu-item compatibility-item platform-paper"><img class="compatibility-icon-image" src="assets/platform-paper.svg" alt=""><span>Paper</span></span>
+                                        <span class="menu-item compatibility-item platform-purpur"><img class="compatibility-icon-image" src="assets/platform-purpur.ico" alt=""><span>Purpur</span></span>
+                                    </div>
                                 </div>
-                            </details>
+                                <details class="card-menu download-menu">
+                                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                                    <div class="menu-list download-menu-list">
+                                        <a class="menu-link download-menu-link" href="https://www.curseforge.com/minecraft/bukkit-plugins/mendingenchant" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-curseforge.png" alt=""><span>CurseForge</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                        <a class="menu-link download-menu-link" href="https://dev.bukkit.org/projects/mendingenchant" target="_blank" rel="noreferrer"><img class="link-icon-image" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </article>
+                        </div>
+                        <p class="filters-empty" id="filters-empty" hidden>No projects match the selected filters.</p>
+                    </div>
                 </div>
             </section>
         </main>

@@ -3,6 +3,11 @@ const updatedElement = document.getElementById("stats-updated");
 const statElements = Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
 const heroElement = document.querySelector(".hero");
 const downloadMenus = Array.from(document.querySelectorAll(".download-menu"));
+const filterForm = document.getElementById("projects-filters");
+const filterResetButton = document.getElementById("filters-reset");
+const filterEmptyState = document.getElementById("filters-empty");
+const projectCards = Array.from(document.querySelectorAll(".card[data-game]"));
+const filterDropdowns = Array.from(document.querySelectorAll("[data-filter-dropdown]"));
 const siteHeader = document.querySelector(".site-header");
 const navToggle = document.querySelector(".nav-toggle");
 const siteNav = document.querySelector("#site-nav");
@@ -203,7 +208,7 @@ function setupDownloadMenus() {
     }
 
     downloadMenus.forEach((menu) => {
-        const summary = menu.querySelector(".download-button");
+        const summary = menu.querySelector(".menu-button");
         if (!summary) {
             return;
         }
@@ -245,6 +250,138 @@ function setupDownloadMenus() {
         }
 
         downloadMenus.forEach(closeMenu);
+    });
+}
+
+function setupProjectFilters() {
+    if (!filterForm || !projectCards.length) {
+        return;
+    }
+
+    function getSelectedValues(name) {
+        return Array.from(filterForm.querySelectorAll(`input[name="${name}"]:checked`)).map((input) => input.value);
+    }
+
+    function getSelectedSelectValue(name) {
+        const input = filterForm.querySelector(`input[type="hidden"][name="${name}"]`);
+        return input?.value ? [input.value] : [];
+    }
+
+    function matchesGroup(cardValues, selectedValues) {
+        if (!selectedValues.length) {
+            return true;
+        }
+
+        return selectedValues.some((value) => cardValues.includes(value));
+    }
+
+    function applyFilters() {
+        const selectedGame = getSelectedSelectValue("game");
+        const selectedPrice = getSelectedSelectValue("price");
+        const selectedCompatibility = getSelectedValues("compatibility");
+        const selectedDownloads = getSelectedValues("downloads");
+
+        let visibleCount = 0;
+
+        projectCards.forEach((card) => {
+            const cardGame = [card.dataset.game ?? ""];
+            const cardPrice = [card.dataset.price ?? ""];
+            const cardCompatibility = (card.dataset.compatibility ?? "").split(",").filter(Boolean);
+            const cardDownloads = (card.dataset.downloads ?? "").split(",").filter(Boolean);
+
+            const isVisible =
+                matchesGroup(cardGame, selectedGame) &&
+                matchesGroup(cardPrice, selectedPrice) &&
+                matchesGroup(cardCompatibility, selectedCompatibility) &&
+                matchesGroup(cardDownloads, selectedDownloads);
+
+            card.classList.toggle("is-hidden", !isVisible);
+
+            if (isVisible) {
+                visibleCount += 1;
+            }
+        });
+
+        if (filterEmptyState) {
+            filterEmptyState.hidden = visibleCount > 0;
+        }
+    }
+
+    filterForm.addEventListener("change", applyFilters);
+
+    if (filterResetButton) {
+        filterResetButton.addEventListener("click", () => {
+            filterForm.reset();
+            applyFilters();
+        });
+    }
+
+    applyFilters();
+}
+
+function setupFilterDropdowns() {
+    if (!filterDropdowns.length) {
+        return;
+    }
+
+    function closeDropdown(dropdown) {
+        dropdown.classList.remove("is-open");
+        const trigger = dropdown.querySelector("[data-filter-trigger]");
+        if (trigger) {
+            trigger.setAttribute("aria-expanded", "false");
+        }
+    }
+
+    filterDropdowns.forEach((dropdown) => {
+        const trigger = dropdown.querySelector("[data-filter-trigger]");
+        const hiddenInput = dropdown.querySelector("input[type=\"hidden\"]");
+        const label = dropdown.querySelector("[data-filter-label]");
+        const options = Array.from(dropdown.querySelectorAll("[data-filter-option]"));
+
+        if (!trigger || !hiddenInput || !label || !options.length) {
+            return;
+        }
+
+        trigger.addEventListener("click", () => {
+            const isOpen = dropdown.classList.contains("is-open");
+            filterDropdowns.forEach(closeDropdown);
+
+            if (!isOpen) {
+                dropdown.classList.add("is-open");
+                trigger.setAttribute("aria-expanded", "true");
+            }
+        });
+
+        options.forEach((option) => {
+            option.addEventListener("click", () => {
+                const value = option.dataset.value ?? "";
+                hiddenInput.value = value;
+                label.textContent = option.querySelector("span:last-child")?.textContent?.trim() ?? option.textContent.trim();
+
+                options.forEach((item) => {
+                    const isSelected = item === option;
+                    item.classList.toggle("is-selected", isSelected);
+                    item.setAttribute("aria-selected", isSelected ? "true" : "false");
+                });
+
+                hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+                closeDropdown(dropdown);
+            });
+        });
+    });
+
+    document.addEventListener("click", (event) => {
+        filterDropdowns.forEach((dropdown) => {
+            if (!dropdown.contains(event.target)) {
+                closeDropdown(dropdown);
+            }
+        });
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            filterDropdowns.forEach(closeDropdown);
+        }
     });
 }
 
@@ -290,4 +427,6 @@ function setupMobileNav() {
 
 setupMobileNav();
 setupDownloadMenus();
+setupFilterDropdowns();
+setupProjectFilters();
 setupHeroParallax();
