@@ -100,6 +100,21 @@
 
                         <form class="filters-form" id="projects-filters">
                             <fieldset class="filter-group">
+                                <legend>Sort</legend>
+                                <div class="filter-dropdown" data-filter-dropdown>
+                                    <input type="hidden" id="filter-sort" name="sort" value="popularity-desc" data-default-value="popularity-desc">
+                                    <button class="filter-select-wrap" type="button" data-filter-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="filter-sort-options">
+                                        <span class="filter-select-price-icon" aria-hidden="true">#</span>
+                                        <span class="filter-select-label" data-filter-label>Popularity</span>
+                                    </button>
+                                    <div class="filter-dropdown-menu" id="filter-sort-options" role="listbox">
+                                        <button class="filter-dropdown-option is-selected" type="button" role="option" data-filter-option data-value="popularity-desc" aria-selected="true"><span>Popularity</span></button>
+                                        <button class="filter-dropdown-option" type="button" role="option" data-filter-option data-value="name-asc" aria-selected="false"><span>Name</span></button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="filter-group">
                                 <legend>Server Platform</legend>
                                 <label class="filter-option"><input type="checkbox" name="compatibility" value="bukkit"><img class="filter-option-icon" src="assets/platform-bukkit.png" alt=""><span>Bukkit</span></label>
                                 <label class="filter-option"><input type="checkbox" name="compatibility" value="spigot"><img class="filter-option-icon" src="assets/platform-spigot.ico" alt=""><span>Spigot</span></label>

@@ -149,6 +149,7 @@ async function hydrateStat(element) {
     const secondarySource = element.dataset.statSourceSecondary;
     const valueElement = element.querySelector(".plugin-stat-value");
     const statKind = element.dataset.statKind ?? "";
+    const card = element.closest(".card");
 
     if (!source || !valueElement) {
         return { value: 0, contributesToTotal: false };
@@ -165,6 +166,10 @@ async function hydrateStat(element) {
         return response.text();
     }));
     const value = responses.reduce((sum, svgText) => sum + extractBadgeValue(svgText), 0);
+
+    if (card && statKind === "downloads") {
+        card.dataset.popularity = String(value);
+    }
 
     animateNumber(valueElement, value, statKind === "stars" ? 650 : 850, formatStatNumber);
 
@@ -205,6 +210,8 @@ async function hydrateStats() {
             day: "numeric"
         })}`;
     }
+
+    updateProjectDisplay();
 }
 
 function setupHeroParallax() {
@@ -331,62 +338,107 @@ function syncDropdownSelection(dropdown) {
     });
 }
 
+function getSelectedValues(name) {
+    if (!filterForm) {
+        return [];
+    }
+
+    return Array.from(filterForm.querySelectorAll(`input[name="${name}"]:checked`)).map((input) => input.value);
+}
+
+function getSelectedSelectValue(name) {
+    if (!filterForm) {
+        return "";
+    }
+
+    const input = filterForm.querySelector(`input[type="hidden"][name="${name}"]`);
+    return input?.value ?? "";
+}
+
+function matchesGroup(cardValues, selectedValues) {
+    if (!selectedValues.length) {
+        return true;
+    }
+
+    return selectedValues.some((value) => cardValues.includes(value));
+}
+
+function sortProjectCards(projectCards, sortValue) {
+    const sortedCards = [...projectCards];
+
+    sortedCards.sort((leftCard, rightCard) => {
+        if (sortValue === "popularity-desc") {
+            const popularityDelta = Number(rightCard.dataset.popularity ?? "0") - Number(leftCard.dataset.popularity ?? "0");
+            if (popularityDelta !== 0) {
+                return popularityDelta;
+            }
+        }
+
+        if (sortValue === "name-asc") {
+            const leftName = leftCard.querySelector("h3")?.textContent?.trim() ?? "";
+            const rightName = rightCard.querySelector("h3")?.textContent?.trim() ?? "";
+            const nameComparison = leftName.localeCompare(rightName, "en", { sensitivity: "base" });
+
+            if (nameComparison !== 0) {
+                return nameComparison;
+            }
+        }
+
+        return Number(leftCard.dataset.projectIndex ?? "0") - Number(rightCard.dataset.projectIndex ?? "0");
+    });
+
+    sortedCards.forEach((card) => {
+        projectsListElement?.appendChild(card);
+    });
+}
+
+function updateProjectDisplay() {
+    const projectCards = getProjectCards();
+    if (!filterForm || !projectCards.length) {
+        return;
+    }
+
+    const selectedGame = getSelectedSelectValue("game");
+    const selectedPrice = getSelectedSelectValue("price");
+    const selectedSort = getSelectedSelectValue("sort");
+    const selectedCompatibility = getSelectedValues("compatibility");
+    const selectedDownloads = getSelectedValues("downloads");
+
+    let visibleCount = 0;
+
+    projectCards.forEach((card) => {
+        const cardGame = [card.dataset.game ?? ""];
+        const cardPrice = [card.dataset.price ?? ""];
+        const cardCompatibility = (card.dataset.compatibility ?? "").split(",").filter(Boolean);
+        const cardDownloads = (card.dataset.downloads ?? "").split(",").filter(Boolean);
+
+        const isVisible =
+            matchesGroup(cardGame, selectedGame ? [selectedGame] : []) &&
+            matchesGroup(cardPrice, selectedPrice ? [selectedPrice] : []) &&
+            matchesGroup(cardCompatibility, selectedCompatibility) &&
+            matchesGroup(cardDownloads, selectedDownloads);
+
+        card.classList.toggle("is-hidden", !isVisible);
+
+        if (isVisible) {
+            visibleCount += 1;
+        }
+    });
+
+    sortProjectCards(projectCards, selectedSort);
+
+    if (filterEmptyState) {
+        filterEmptyState.hidden = visibleCount > 0;
+    }
+}
+
 function setupProjectFilters() {
     const projectCards = getProjectCards();
     if (!filterForm || !projectCards.length) {
         return;
     }
 
-    function getSelectedValues(name) {
-        return Array.from(filterForm.querySelectorAll(`input[name="${name}"]:checked`)).map((input) => input.value);
-    }
-
-    function getSelectedSelectValue(name) {
-        const input = filterForm.querySelector(`input[type="hidden"][name="${name}"]`);
-        return input?.value ? [input.value] : [];
-    }
-
-    function matchesGroup(cardValues, selectedValues) {
-        if (!selectedValues.length) {
-            return true;
-        }
-
-        return selectedValues.some((value) => cardValues.includes(value));
-    }
-
-    function applyFilters() {
-        const selectedGame = getSelectedSelectValue("game");
-        const selectedPrice = getSelectedSelectValue("price");
-        const selectedCompatibility = getSelectedValues("compatibility");
-        const selectedDownloads = getSelectedValues("downloads");
-
-        let visibleCount = 0;
-
-        projectCards.forEach((card) => {
-            const cardGame = [card.dataset.game ?? ""];
-            const cardPrice = [card.dataset.price ?? ""];
-            const cardCompatibility = (card.dataset.compatibility ?? "").split(",").filter(Boolean);
-            const cardDownloads = (card.dataset.downloads ?? "").split(",").filter(Boolean);
-
-            const isVisible =
-                matchesGroup(cardGame, selectedGame) &&
-                matchesGroup(cardPrice, selectedPrice) &&
-                matchesGroup(cardCompatibility, selectedCompatibility) &&
-                matchesGroup(cardDownloads, selectedDownloads);
-
-            card.classList.toggle("is-hidden", !isVisible);
-
-            if (isVisible) {
-                visibleCount += 1;
-            }
-        });
-
-        if (filterEmptyState) {
-            filterEmptyState.hidden = visibleCount > 0;
-        }
-    }
-
-    filterForm.addEventListener("change", applyFilters);
+    filterForm.addEventListener("change", updateProjectDisplay);
 
     if (filterResetButton) {
         filterResetButton.addEventListener("click", () => {
@@ -394,15 +446,15 @@ function setupProjectFilters() {
             filterDropdowns.forEach((dropdown) => {
                 const hiddenInput = dropdown.querySelector('input[type="hidden"]');
                 if (hiddenInput) {
-                    hiddenInput.value = "";
+                    hiddenInput.value = hiddenInput.dataset.defaultValue ?? "";
                 }
                 syncDropdownSelection(dropdown);
             });
-            applyFilters();
+            updateProjectDisplay();
         });
     }
 
-    applyFilters();
+    updateProjectDisplay();
 }
 
 function setupFilterDropdowns() {
@@ -554,7 +606,7 @@ function renderProjectCard(project) {
         statAttributes.push(`data-stat-source-secondary="${escapeHtml(statSources[1])}"`);
     }
 
-    return `<article class="card" data-game="${escapeHtml(project.game)}" data-price="${escapeHtml(project.price)}" data-compatibility="${escapeHtml((project.compatibility ?? []).join(","))}" data-downloads="${escapeHtml((project.downloads ?? []).join(","))}">
+    return `<article class="card" data-game="${escapeHtml(project.game)}" data-price="${escapeHtml(project.price)}" data-compatibility="${escapeHtml((project.compatibility ?? []).join(","))}" data-downloads="${escapeHtml((project.downloads ?? []).join(","))}" data-project-index="${escapeHtml(String(project.index ?? 0))}" data-popularity="0">
         <div class="card-header">
             <h3>${escapeHtml(project.name)}</h3>
             <div class="card-meta">
@@ -613,7 +665,7 @@ async function initProjects() {
 
     try {
         const projects = await loadProjects();
-        renderProjects(projects);
+        renderProjects(projects.map((project, index) => ({ ...project, index })));
         setupDownloadMenus();
         setupProjectFilters();
         await hydrateStats();
