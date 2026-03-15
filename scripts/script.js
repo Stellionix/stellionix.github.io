@@ -1,16 +1,83 @@
 const totalElement = document.getElementById("downloads-total");
 const updatedElement = document.getElementById("stats-updated");
-const statElements = Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
 const heroElement = document.querySelector(".hero");
-const downloadMenus = Array.from(document.querySelectorAll(".download-menu"));
 const filterForm = document.getElementById("projects-filters");
 const filterResetButton = document.getElementById("filters-reset");
 const filterEmptyState = document.getElementById("filters-empty");
-const projectCards = Array.from(document.querySelectorAll(".card[data-game]"));
 const filterDropdowns = Array.from(document.querySelectorAll("[data-filter-dropdown]"));
 const siteHeader = document.querySelector(".site-header");
 const navToggle = document.querySelector(".nav-toggle");
 const siteNav = document.querySelector("#site-nav");
+const projectsListElement = document.getElementById("projects-list");
+
+const gameMeta = {
+    minecraft: {
+        label: "Minecraft",
+        icon: "assets/game-minecraft.svg"
+    }
+};
+
+const priceMeta = {
+    free: {
+        label: "Free"
+    }
+};
+
+const platformMeta = {
+    bukkit: {
+        label: "Bukkit",
+        icon: "assets/platform-bukkit.png"
+    },
+    spigot: {
+        label: "Spigot",
+        icon: "assets/platform-spigot.ico"
+    },
+    paper: {
+        label: "Paper",
+        icon: "assets/platform-paper.svg"
+    },
+    purpur: {
+        label: "Purpur",
+        icon: "assets/platform-purpur.ico"
+    },
+    folia: {
+        label: "Folia",
+        icon: "assets/platform-folia.svg"
+    },
+    modrinth: {
+        label: "Modrinth",
+        icon: "assets/platform-modrinth.ico"
+    },
+    curseforge: {
+        label: "CurseForge",
+        icon: "assets/platform-curseforge.png"
+    }
+};
+
+const secondaryLinkMeta = {
+    github: {
+        label: "GitHub",
+        icon: "assets/platform-github.png",
+        iconClass: ""
+    },
+    docs: {
+        label: "Docs",
+        icon: "assets/platform-docs.svg",
+        iconClass: "link-icon-docs"
+    }
+};
+
+function getProjectCards() {
+    return Array.from(document.querySelectorAll(".card[data-game]"));
+}
+
+function getStatElements() {
+    return Array.from(document.querySelectorAll(".plugin-stat[data-stat-source]"));
+}
+
+function getDownloadMenus() {
+    return Array.from(document.querySelectorAll(".download-menu"));
+}
 
 function formatNumber(value) {
     return `~${Number(value || 0).toLocaleString("en-US")}`;
@@ -108,6 +175,7 @@ async function hydrateStat(element) {
 }
 
 async function hydrateStats() {
+    const statElements = getStatElements();
     const results = await Promise.allSettled(statElements.map(hydrateStat));
     const total = results.reduce((sum, result) => {
         if (result.status === "fulfilled" && result.value.contributesToTotal) {
@@ -138,16 +206,6 @@ async function hydrateStats() {
         })}`;
     }
 }
-
-hydrateStats().catch(() => {
-    if (totalElement) {
-        totalElement.textContent = "N/A";
-    }
-
-    if (updatedElement) {
-        updatedElement.textContent = "Live data unavailable";
-    }
-});
 
 function setupHeroParallax() {
     if (!heroElement || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -186,6 +244,7 @@ function setupHeroParallax() {
 }
 
 function setupDownloadMenus() {
+    const downloadMenus = getDownloadMenus();
     if (!downloadMenus.length) {
         return;
     }
@@ -253,7 +312,27 @@ function setupDownloadMenus() {
     });
 }
 
+function syncDropdownSelection(dropdown) {
+    const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+    const label = dropdown.querySelector("[data-filter-label]");
+    const options = Array.from(dropdown.querySelectorAll("[data-filter-option]"));
+
+    if (!hiddenInput || !label || !options.length) {
+        return;
+    }
+
+    const selectedOption = options.find((option) => (option.dataset.value ?? "") === hiddenInput.value) ?? options[0];
+    label.textContent = selectedOption.querySelector("span:last-child")?.textContent?.trim() ?? selectedOption.textContent.trim();
+
+    options.forEach((option) => {
+        const isSelected = option === selectedOption;
+        option.classList.toggle("is-selected", isSelected);
+        option.setAttribute("aria-selected", isSelected ? "true" : "false");
+    });
+}
+
 function setupProjectFilters() {
+    const projectCards = getProjectCards();
     if (!filterForm || !projectCards.length) {
         return;
     }
@@ -312,6 +391,13 @@ function setupProjectFilters() {
     if (filterResetButton) {
         filterResetButton.addEventListener("click", () => {
             filterForm.reset();
+            filterDropdowns.forEach((dropdown) => {
+                const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+                if (hiddenInput) {
+                    hiddenInput.value = "";
+                }
+                syncDropdownSelection(dropdown);
+            });
             applyFilters();
         });
     }
@@ -334,13 +420,14 @@ function setupFilterDropdowns() {
 
     filterDropdowns.forEach((dropdown) => {
         const trigger = dropdown.querySelector("[data-filter-trigger]");
-        const hiddenInput = dropdown.querySelector("input[type=\"hidden\"]");
-        const label = dropdown.querySelector("[data-filter-label]");
+        const hiddenInput = dropdown.querySelector('input[type="hidden"]');
         const options = Array.from(dropdown.querySelectorAll("[data-filter-option]"));
 
-        if (!trigger || !hiddenInput || !label || !options.length) {
+        if (!trigger || !hiddenInput || !options.length) {
             return;
         }
+
+        syncDropdownSelection(dropdown);
 
         trigger.addEventListener("click", () => {
             const isOpen = dropdown.classList.contains("is-open");
@@ -354,16 +441,8 @@ function setupFilterDropdowns() {
 
         options.forEach((option) => {
             option.addEventListener("click", () => {
-                const value = option.dataset.value ?? "";
-                hiddenInput.value = value;
-                label.textContent = option.querySelector("span:last-child")?.textContent?.trim() ?? option.textContent.trim();
-
-                options.forEach((item) => {
-                    const isSelected = item === option;
-                    item.classList.toggle("is-selected", isSelected);
-                    item.setAttribute("aria-selected", isSelected ? "true" : "false");
-                });
-
+                hiddenInput.value = option.dataset.value ?? "";
+                syncDropdownSelection(dropdown);
                 hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
                 closeDropdown(dropdown);
             });
@@ -425,8 +504,133 @@ function setupMobileNav() {
     });
 }
 
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function renderSecondaryLink(link) {
+    const meta = secondaryLinkMeta[link.type];
+    if (!meta) {
+        return "";
+    }
+
+    const iconClass = meta.iconClass ? ` ${meta.iconClass}` : "";
+    return `<a class="card-secondary-link" href="${escapeHtml(link.href)}" target="_blank" rel="noreferrer"><img class="link-icon-image${iconClass}" src="${escapeHtml(meta.icon)}" alt=""><span>${escapeHtml(meta.label)}</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>`;
+}
+
+function renderCompatibilityItem(platform) {
+    const meta = platformMeta[platform];
+    if (!meta) {
+        return "";
+    }
+
+    return `<span class="menu-item compatibility-item platform-${escapeHtml(platform)}"><img class="compatibility-icon-image" src="${escapeHtml(meta.icon)}" alt=""><span>${escapeHtml(meta.label)}</span></span>`;
+}
+
+function renderDownloadLink(link) {
+    const meta = platformMeta[link.platform];
+    if (!meta) {
+        return "";
+    }
+
+    return `<a class="menu-link download-menu-link" href="${escapeHtml(link.href)}" target="_blank" rel="noreferrer"><img class="link-icon-image" src="${escapeHtml(meta.icon)}" alt=""><span>${escapeHtml(meta.label)}</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>`;
+}
+
+function renderProjectCard(project) {
+    const game = gameMeta[project.game] ?? { label: project.game, icon: "" };
+    const price = priceMeta[project.price] ?? { label: project.price };
+    const statSources = Array.isArray(project.stats?.sources) ? project.stats.sources : [];
+    const statAttributes = [
+        `data-stat-kind="${escapeHtml(project.stats?.kind ?? "downloads")}"`,
+        `data-stat-source="${escapeHtml(statSources[0] ?? "")}"`
+    ];
+
+    if (statSources[1]) {
+        statAttributes.push(`data-stat-source-secondary="${escapeHtml(statSources[1])}"`);
+    }
+
+    return `<article class="card" data-game="${escapeHtml(project.game)}" data-price="${escapeHtml(project.price)}" data-compatibility="${escapeHtml((project.compatibility ?? []).join(","))}" data-downloads="${escapeHtml((project.downloads ?? []).join(","))}">
+        <div class="card-header">
+            <h3>${escapeHtml(project.name)}</h3>
+            <div class="card-meta">
+                <span class="game-badge"><img class="game-badge-icon" src="${escapeHtml(game.icon)}" alt=""><span>${escapeHtml(game.label)}</span></span>
+                <span class="price-badge"><span class="price-badge-icon" aria-hidden="true">$</span><span>${escapeHtml(price.label)}</span></span>
+                <div class="plugin-stats">
+                    <div class="plugin-stat" ${statAttributes.join(" ")}>
+                        <span class="plugin-stat-value">Loading...</span>
+                        <span class="plugin-stat-label" aria-label="Downloads"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="plugin-logo-wrap">
+            <img class="plugin-logo" src="${escapeHtml(project.logo?.src ?? "")}" alt="${escapeHtml(project.logo?.alt ?? `${project.name} logo`)}">
+        </div>
+        <p>${escapeHtml(project.description ?? "")}</p>
+        <div class="card-footer">
+            <div class="card-secondary-links">${(project.secondaryLinks ?? []).map(renderSecondaryLink).join("")}</div>
+            <div class="card-action-menus">
+                <div class="compatibility-menu">
+                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                    <div class="menu-list compatibility-menu-list">${(project.compatibility ?? []).map(renderCompatibilityItem).join("")}</div>
+                </div>
+                <details class="card-menu download-menu">
+                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                    <div class="menu-list download-menu-list">${(project.downloadLinks ?? []).map(renderDownloadLink).join("")}</div>
+                </details>
+            </div>
+        </div>
+    </article>`;
+}
+
+function renderProjects(projects) {
+    if (!projectsListElement) {
+        return;
+    }
+
+    projectsListElement.innerHTML = projects.map(renderProjectCard).join("");
+}
+
+async function loadProjects() {
+    const response = await fetch("data/projects.json");
+
+    if (!response.ok) {
+        throw new Error("Failed to load projects data.");
+    }
+
+    return response.json();
+}
+
+async function initProjects() {
+    if (!projectsListElement) {
+        return;
+    }
+
+    try {
+        const projects = await loadProjects();
+        renderProjects(projects);
+        setupDownloadMenus();
+        setupProjectFilters();
+        await hydrateStats();
+    } catch {
+        projectsListElement.innerHTML = "<p>Unable to load projects.</p>";
+
+        if (totalElement) {
+            totalElement.textContent = "N/A";
+        }
+
+        if (updatedElement) {
+            updatedElement.textContent = "Live data unavailable";
+        }
+    }
+}
+
 setupMobileNav();
-setupDownloadMenus();
 setupFilterDropdowns();
-setupProjectFilters();
 setupHeroParallax();
+initProjects();

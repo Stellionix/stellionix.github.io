@@ -1,0 +1,264 @@
+[
+  {
+    "slug": "deadchest",
+    "name": "Deadchest",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur", "folia"],
+    "downloads": ["modrinth", "curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-deadchest.png",
+      "alt": "Deadchest logo"
+    },
+    "description": "Turn player death into a cleaner, frustration-free experience with reliable death chests, admin recovery tools, and modern Paper, Spigot, and Bukkit support.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322882?logo=curseforge&label=CurseForge%20downloads",
+        "https://img.shields.io/modrinth/dt/dead-chest?logo=modrinth&label=Modrinth%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/Deadchest"
+      },
+      {
+        "type": "docs",
+        "href": "https://stellionix.github.io/Deadchest/"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "modrinth",
+        "href": "https://modrinth.com/plugin/dead-chest"
+      },
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/dead-chest"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/dead-chest"
+      }
+    ]
+  },
+  {
+    "slug": "spawnersilk",
+    "name": "SpawnerSilk",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-spawnersilk.png",
+      "alt": "SpawnerSilk logo"
+    },
+    "description": "Give your server a smarter progression loop with Silk Touch spawner pickup, flexible drop rules, and precise spawner control built for survival economies and custom gameplay.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322295?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/SpawnerSilk"
+      },
+      {
+        "type": "docs",
+        "href": "https://stellionix.github.io/SpawnerSilk/"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/spawnersilk"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/spawnersilk"
+      }
+    ]
+  },
+  {
+    "slug": "mobsmanager",
+    "name": "MobsManager",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-mobsmanager.png",
+      "alt": "MobsManager logo"
+    },
+    "description": "Take full control of mob spawning world by world, reduce unwanted chaos, and keep your server balanced with simple commands instead of messy workarounds.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322365?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/MobsManager"
+      },
+      {
+        "type": "docs",
+        "href": "https://stellionix.github.io/MobsManager/"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/mobsmanager"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/mobsmanager"
+      }
+    ]
+  },
+  {
+    "slug": "creaturecapture",
+    "name": "CreatureCapture",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-creaturecapture.png",
+      "alt": "CreatureCapture logo"
+    },
+    "description": "Add a collectible twist to your server with creature capture, progression tracking, and a competitive loop that gives players more reasons to explore and keep playing.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322752?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/CreatureCapture"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/creaturecapture"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/creaturecapture"
+      }
+    ]
+  },
+  {
+    "slug": "redstoneme",
+    "name": "RedStoneMe",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-redstoneme.png",
+      "alt": "RedStoneMe logo"
+    },
+    "description": "Create immersive redstone interactions triggered by player presence alone, perfect for maps, traps, secret builds, and automation that feels more alive.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322434?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/RedStoneMe"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/redstoneme"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/redstoneme"
+      }
+    ]
+  },
+  {
+    "slug": "cubeball",
+    "name": "Cubeball",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-cubeball.png",
+      "alt": "Cubeball logo"
+    },
+    "description": "Bring football into Minecraft with a playful block-based ball system that is easy to install, fun to showcase, and ideal for mini-games, events, and community servers.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/470085?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/Cubeball"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/cubeball"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/cubeball"
+      }
+    ]
+  },
+  {
+    "slug": "mendingenchant",
+    "name": "MendingEnchant",
+    "game": "minecraft",
+    "price": "free",
+    "compatibility": ["bukkit", "spigot", "paper", "purpur"],
+    "downloads": ["curseforge", "bukkit"],
+    "logo": {
+      "src": "assets/plugin-mendingenchant.png",
+      "alt": "MendingEnchant logo"
+    },
+    "description": "Let players unlock Mending through the enchantment table and make high-value progression feel more rewarding without relying entirely on villager trading or rare loot.",
+    "stats": {
+      "kind": "downloads",
+      "sources": [
+        "https://img.shields.io/curseforge/dt/322356?logo=curseforge&label=CurseForge%20downloads"
+      ]
+    },
+    "secondaryLinks": [
+      {
+        "type": "github",
+        "href": "https://github.com/Stellionix/MendingEnchant"
+      }
+    ],
+    "downloadLinks": [
+      {
+        "platform": "curseforge",
+        "href": "https://www.curseforge.com/minecraft/bukkit-plugins/mendingenchant"
+      },
+      {
+        "platform": "bukkit",
+        "href": "https://dev.bukkit.org/projects/mendingenchant"
+      }
+    ]
+  }
+]
