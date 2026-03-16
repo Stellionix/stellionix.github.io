@@ -12,6 +12,7 @@
     --glow: #d8f6ff;
     --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
     --hero-parallax-offset: 0px;
+    --section-scroll-offset: 92px;
 }
 
 * {
@@ -339,6 +340,54 @@ a {
     background: radial-gradient(circle, rgba(133, 88, 255, 0.38), transparent 68%);
 }
 
+.hero-scroll-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 52px;
+    z-index: 2;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: rgba(246, 247, 255, 0.82);
+    transform: translateX(-50%);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-scroll-indicator:hover {
+    color: var(--accent);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.hero-scroll-indicator-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.hero-scroll-indicator-arrow {
+    width: 18px;
+    height: 18px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    animation: hero-scroll-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes hero-scroll-bounce {
+    0%,
+    100% {
+        transform: rotate(45deg) translate(0, 0);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: rotate(45deg) translate(6px, 6px);
+        opacity: 1;
+    }
+}
+
 .panel-content {
     position: relative;
     display: grid;
@@ -398,6 +447,7 @@ a {
 
 .section {
     padding: 28px 0 72px;
+    scroll-margin-top: var(--section-scroll-offset);
 }
 
 .section-head {
@@ -1443,6 +1493,10 @@ a {
 }
 
 @media (max-width: 960px) {
+    :root {
+        --section-scroll-offset: 28px;
+    }
+
     .projects-layout {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -1468,7 +1522,7 @@ a {
         grid-template-columns: 1fr;
         min-height: auto;
         gap: 24px;
-        padding-top: 16px;
+        padding: 16px 0 88px;
     }
 
     .hero::before {
@@ -1567,7 +1621,7 @@ a {
 
     .hero {
         gap: 20px;
-        padding: 12px 0 52px;
+        padding: 12px 0 84px;
         justify-items: center;
     }
 
@@ -1607,6 +1661,15 @@ a {
         width: 100%;
         padding: 20px 16px 16px;
         border-radius: 24px;
+    }
+
+    .hero-scroll-indicator {
+        bottom: 44px;
+    }
+
+    .hero-scroll-indicator-label {
+        font-size: 0.66rem;
+        letter-spacing: 0.15em;
     }
 
     .hero-panel::before {
@@ -1832,5 +1895,15 @@ a {
     .menu-link,
     .menu-item {
         padding: 10px 11px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-scroll-indicator-arrow {
+        animation: none;
+    }
+
+    .hero-scroll-indicator {
+        transition: none;
     }
 }
