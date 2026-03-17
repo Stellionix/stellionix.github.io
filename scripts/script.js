@@ -19,6 +19,7 @@ const configPluginSelect = document.getElementById("config-plugin");
 const configVersionSelect = document.getElementById("config-version");
 const configDropdowns = Array.from(document.querySelectorAll("[data-config-dropdown]"));
 const configOutputElement = document.getElementById("config-output");
+const configOutputGutterElement = document.getElementById("config-output-gutter");
 const configOutputHighlightElement = document.getElementById("config-output-highlight");
 const configOutputFilenameElement = document.getElementById("config-output-filename");
 const configCopyButton = document.getElementById("config-copy");
@@ -1095,6 +1096,9 @@ function resizeConfigOutput() {
 
     configOutputElement.style.height = "auto";
     configOutputElement.style.height = `${configOutputElement.scrollHeight}px`;
+    if (configOutputGutterElement) {
+        configOutputGutterElement.style.height = `${configOutputElement.scrollHeight}px`;
+    }
     if (configOutputHighlightElement) {
         configOutputHighlightElement.style.height = `${configOutputElement.scrollHeight}px`;
     }
@@ -1150,10 +1154,15 @@ function updateConfigOutputHighlight() {
     }
 
     const yaml = getConfigOutputValue() || " ";
-    configOutputHighlightElement.innerHTML = yaml
-        .split(/\r?\n/)
+    const lines = yaml.split(/\r?\n/);
+    configOutputHighlightElement.innerHTML = lines
         .map((line) => highlightYamlLine(line))
         .join("\n");
+    if (configOutputGutterElement) {
+        configOutputGutterElement.textContent = lines
+            .map((_, index) => String(index + 1))
+            .join("\n");
+    }
 }
 
 function applyYamlFromEditor() {
@@ -1600,10 +1609,12 @@ function setupConfigurator() {
     });
 
     configOutputElement?.addEventListener("scroll", () => {
+        if (configOutputGutterElement) {
+            configOutputGutterElement.scrollTop = configOutputElement.scrollTop;
+        }
         if (!configOutputHighlightElement) {
             return;
         }
-
         configOutputHighlightElement.scrollTop = configOutputElement.scrollTop;
         configOutputHighlightElement.scrollLeft = configOutputElement.scrollLeft;
     });

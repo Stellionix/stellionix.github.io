@@ -757,7 +757,8 @@ body.is-page-ready .site-header {
 }
 
 .config-output-editor {
-    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     width: 100%;
     min-height: 480px;
     border-radius: 20px;
@@ -766,15 +767,37 @@ body.is-page-ready .site-header {
     overflow: hidden;
 }
 
+.config-output-gutter,
 .config-output,
 .config-output-highlight {
     margin: 0;
-    padding: 18px;
     min-height: 480px;
-    width: 100%;
     font: 0.92rem/1.7 "Cascadia Code", "Consolas", monospace;
     white-space: pre;
     tab-size: 2;
+}
+
+.config-output-gutter {
+    padding: 18px 12px 18px 18px;
+    min-width: 50px;
+    color: rgba(171, 179, 220, 0.7);
+    text-align: right;
+    user-select: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+}
+
+.config-output-code {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+}
+
+.config-output,
+.config-output-highlight {
+    padding: 18px;
+    width: 100%;
 }
 
 .config-output-highlight {
@@ -2185,6 +2208,17 @@ body.is-page-ready .site-header {
         min-height: 320px;
         padding: 14px;
         font-size: 0.84rem;
+    }
+
+    .config-output-highlight,
+    .config-output-gutter {
+        min-height: 320px;
+        font-size: 0.84rem;
+    }
+
+    .config-output-gutter {
+        min-width: 42px;
+        padding: 14px 8px 14px 12px;
     }
 
     .filters-form {
