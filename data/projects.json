@@ -10,7 +10,10 @@
       "src": "assets/plugin-deadchest.png",
       "alt": "Deadchest logo"
     },
-    "description": "Turn player death into a cleaner, frustration-free experience with reliable death chests, admin recovery tools, and modern Paper, Spigot, and Bukkit support.",
+    "description": [
+      "Deadchest replaces the usual item scatter on death with a protected chest placed near the player's death location, which makes recovery much cleaner on survival servers.",
+      "It handles tricky cases like invalid blocks, water, lava, world height limits, owner-only access, timed expiration, hologram display, and different recovery modes. It also supports localization and optional WorldGuard integration to control exactly where death chests are allowed to generate."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -54,7 +57,10 @@
       "src": "assets/plugin-spawnersilk.png",
       "alt": "SpawnerSilk logo"
     },
-    "description": "Give your server a smarter progression loop with Silk Touch spawner pickup, flexible drop rules, and precise spawner control built for survival economies and custom gameplay.",
+    "description": [
+      "SpawnerSilk lets players mine, collect, place, and retune mob spawners with configurable Silk Touch rules, pickaxe requirements, and drop chances that fit your server economy.",
+      "You can choose whether spawners drop directly, go to inventory, grant XP, or interact with spawn eggs for custom mob setups. The plugin also includes overlay and feedback systems, blacklist restrictions, and optional ShopGUI+ support for servers that want tighter integration with their shop workflow."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -93,7 +99,10 @@
       "src": "assets/plugin-mobsmanager.png",
       "alt": "MobsManager logo"
     },
-    "description": "Take full control of mob spawning world by world, reduce unwanted chaos, and keep your server balanced with simple commands instead of messy workarounds.",
+    "description": [
+      "MobsManager gives admins direct world-by-world control over mob spawning without forcing them through a dense or obscure config process.",
+      "You can selectively allow or block natural spawns, custom spawns, spawner-generated mobs, spawn egg mobs, breeding, or iron golems depending on the world and the gameplay you want there. It is built for practical server administration, especially when you need to keep survival, lobby, event, and custom worlds under tighter balance."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -132,7 +141,10 @@
       "src": "assets/plugin-creaturecapture.png",
       "alt": "CreatureCapture logo"
     },
-    "description": "Add a collectible twist to your server with creature capture, progression tracking, and a competitive loop that gives players more reasons to explore and keep playing.",
+    "description": [
+      "CreatureCapture adds a capture-focused progression loop by giving players a special Silk Touch bow that can transform creatures into spawn eggs.",
+      "That opens up collectible gameplay, controlled creature transport, and a more hands-on way to build custom mob setups for farms, events, or progression systems. It also pairs naturally with SpawnerSilk, since captured eggs can then be used to customize spawners and extend the loop even further."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -167,7 +179,10 @@
       "src": "assets/plugin-redstoneme.png",
       "alt": "RedStoneMe logo"
     },
-    "description": "Create immersive redstone interactions triggered by player presence alone, perfect for maps, traps, secret builds, and automation that feels more alive.",
+    "description": [
+      "RedStoneMe turns chosen blocks into proximity-based redstone triggers that activate when players enter a configurable radius, which is ideal for secret doors, traps, puzzle maps, and custom automation.",
+      "Each trigger can be public or private, enabled or disabled, and shared with specific players while remaining protected from unwanted edits. The plugin is designed to stay practical in real worlds with multiworld support, persistent storage, and a full command set to create, inspect, rename, and manage triggers in game."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -202,7 +217,10 @@
       "src": "assets/plugin-cubeball.png",
       "alt": "Cubeball logo"
     },
-    "description": "Bring football into Minecraft with a playful block-based ball system that is easy to install, fun to showcase, and ideal for mini-games, events, and community servers.",
+    "description": [
+      "Cubeball brings a full football mini-game into Minecraft through a movable block-based ball with smooth movement, bouncing, and configurable arena behavior.",
+      "You can use it casually by generating a ball anywhere, or build full matches with teams, score tracking, rounds, timers, overtime, goal zones, goal animations, pause and resume controls, and spectator support. It also works well for custom game modes beyond standard football, which makes it useful for community events and mini-game servers."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [
@@ -237,7 +255,10 @@
       "src": "assets/plugin-mendingenchant.png",
       "alt": "MendingEnchant logo"
     },
-    "description": "Let players unlock Mending through the enchantment table and make high-value progression feel more rewarding without relying entirely on villager trading or rare loot.",
+    "description": [
+      "MendingEnchant makes the Mending enchantment available through the enchantment table instead of forcing players to rely only on villagers, loot, or fishing luck.",
+      "The chance can be tuned from the config according to enchant cost, and the system works with books, tools, weapons, armor, and even optional fishing rewards. It also includes permission-based probability tiers, which makes it useful for balancing rarity differently across ranks, worlds, or server progression stages."
+    ],
     "stats": {
       "kind": "downloads",
       "sources": [

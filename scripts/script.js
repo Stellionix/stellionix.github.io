@@ -597,6 +597,10 @@ function renderProjectCard(project) {
     const game = gameMeta[project.game] ?? { label: project.game, icon: "" };
     const price = priceMeta[project.price] ?? { label: project.price };
     const statSources = Array.isArray(project.stats?.sources) ? project.stats.sources : [];
+    const descriptionParagraphs = (Array.isArray(project.description) ? project.description : [project.description])
+        .filter(Boolean)
+        .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
+        .join("");
     const statAttributes = [
         `data-stat-kind="${escapeHtml(project.stats?.kind ?? "downloads")}"`,
         `data-stat-source="${escapeHtml(statSources[0] ?? "")}"`
@@ -620,21 +624,27 @@ function renderProjectCard(project) {
                 </div>
             </div>
         </div>
-        <div class="plugin-logo-wrap">
-            <img class="plugin-logo" src="${escapeHtml(project.logo?.src ?? "")}" alt="${escapeHtml(project.logo?.alt ?? `${project.name} logo`)}">
-        </div>
-        <p>${escapeHtml(project.description ?? "")}</p>
-        <div class="card-footer">
-            <div class="card-secondary-links">${(project.secondaryLinks ?? []).map(renderSecondaryLink).join("")}</div>
-            <div class="card-action-menus">
-                <div class="compatibility-menu">
-                    <div class="menu-button compatibility-button"><span>Platforms</span></div>
-                    <div class="menu-list compatibility-menu-list">${(project.compatibility ?? []).map(renderCompatibilityItem).join("")}</div>
+        <div class="card-body">
+            <div class="card-visual">
+                <div class="plugin-logo-wrap">
+                    <img class="plugin-logo" src="${escapeHtml(project.logo?.src ?? "")}" alt="${escapeHtml(project.logo?.alt ?? `${project.name} logo`)}">
                 </div>
-                <details class="card-menu download-menu">
-                    <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
-                    <div class="menu-list download-menu-list">${(project.downloadLinks ?? []).map(renderDownloadLink).join("")}</div>
-                </details>
+            </div>
+            <div class="card-content">
+                <div class="card-description">${descriptionParagraphs}</div>
+                <div class="card-footer">
+                    <div class="card-secondary-links">${(project.secondaryLinks ?? []).map(renderSecondaryLink).join("")}</div>
+                    <div class="card-action-menus">
+                        <div class="compatibility-menu">
+                            <div class="menu-button compatibility-button"><span>Platforms</span></div>
+                            <div class="menu-list compatibility-menu-list">${(project.compatibility ?? []).map(renderCompatibilityItem).join("")}</div>
+                        </div>
+                        <details class="card-menu download-menu">
+                            <summary class="menu-button download-button"><img class="download-button-icon" src="assets/icon-download.svg" alt=""><span>Download</span></summary>
+                            <div class="menu-list download-menu-list">${(project.downloadLinks ?? []).map(renderDownloadLink).join("")}</div>
+                        </details>
+                    </div>
+                </div>
             </div>
         </div>
     </article>`;
