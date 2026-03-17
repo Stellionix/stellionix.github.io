@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellionix - YAML Builder</title>
+    <link rel="icon" type="image/png" href="assets/stellionix-logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="index.html">
+                <img class="brand-mark" src="assets/stellionix-logo.png" alt="Stellionix logo">
+                <span class="brand-text">
+                    <span class="brand-title">Stellionix</span>
+                    <span class="brand-subtitle">Minecraft plugin development</span>
+                </span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav" id="site-nav">
+                <a href="index.html#projects">Projects</a>
+                <a href="yaml-builder.html">YAML Builder</a>
+                <a href="https://discord.com/invite/jCsvJxS" target="_blank" rel="noreferrer">Discord</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page">
+        <main>
+            <section class="section" id="configurator">
+                <div class="section-head">
+                    <div>
+                        <h2 class="section-title-with-badge">YAML Builder <span class="section-beta-badge">Beta</span></h2>
+                    </div>
+                    <p>
+                        Pick a plugin and version, adjust the options visually, then copy or download the
+                        generated YAML directly into your server plugin folder.
+                    </p>
+                </div>
+
+                <div class="configurator-layout">
+                    <aside class="configurator-panel">
+                        <div class="configurator-panel-head">
+                            <strong>Preset Selection</strong>
+                            <span class="configurator-hint" id="configurator-hint">Loading presets...</span>
+                        </div>
+
+                        <div class="configurator-controls">
+                            <label class="configurator-control">
+                                <span>Plugin</span>
+                                <div class="filter-dropdown config-dropdown" data-config-dropdown>
+                                    <input type="hidden" id="config-plugin" value="">
+                                    <button class="filter-select-wrap config-select-wrap" type="button" data-config-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="config-plugin-options">
+                                        <span class="filter-select-label" data-config-label>Select plugin</span>
+                                    </button>
+                                    <div class="filter-dropdown-menu" id="config-plugin-options" role="listbox"></div>
+                                </div>
+                            </label>
+
+                            <label class="configurator-control">
+                                <span>Version</span>
+                                <div class="filter-dropdown config-dropdown" data-config-dropdown>
+                                    <input type="hidden" id="config-version" value="">
+                                    <button class="filter-select-wrap config-select-wrap" type="button" data-config-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="config-version-options">
+                                        <span class="filter-select-label" data-config-label>Select version</span>
+                                    </button>
+                                    <div class="filter-dropdown-menu" id="config-version-options" role="listbox"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="configurator-summary" id="configurator-summary">
+                            <h3>Select a preset</h3>
+                            <p>Choose a plugin and version to open the configuration interface.</p>
+                        </div>
+
+                        <form class="configurator-form" id="configurator-form"></form>
+                    </aside>
+
+                    <div class="config-output-panel">
+                        <div class="config-output-head">
+                            <div>
+                                <strong>Generated YAML</strong>
+                                <span id="config-output-filename">config.yml</span>
+                            </div>
+                            <div class="config-output-actions">
+                                <button class="button button-secondary config-output-button" type="button" id="config-copy">Copy YAML</button>
+                                <button class="button button-primary config-output-button" type="button" id="config-download">Download</button>
+                            </div>
+                        </div>
+
+                        <div class="config-output-editor">
+                            <pre class="config-output-highlight" id="config-output-highlight" aria-hidden="true"># Select a preset to build a YAML configuration.</pre>
+                            <textarea class="config-output" id="config-output" spellcheck="false"># Select a preset to build a YAML configuration.</textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer" id="contact">
+            <span>Stellionix - Minecraft plugins for Bukkit, Spigot, and Paper servers</span>
+            <a href="https://github.com/Stellionix" target="_blank" rel="noreferrer"><span>github.com/Stellionix</span><img class="external-link-icon" src="assets/icon-external-link.svg" alt=""></a>
+        </footer>
+    </div>
+    <script src="scripts/script.js"></script>
+</body>
+</html>

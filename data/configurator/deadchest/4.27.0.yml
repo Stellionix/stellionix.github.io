@@ -1,0 +1,229 @@
+####################################################################################################
+# DeadChest Configuration
+#
+# Plugin page and documentation:
+#   https://dev.bukkit.org/projects/dead-chest
+#
+# Support (Discord):
+#   https://discordapp.com/invite/jCsvJxS
+#
+# After editing this file, run '/dc reload' to apply the new settings.
+####################################################################################################
+
+# Configuration schema version.
+# Increased when key structure changes.
+config-version: 2
+
+localization:
+  # Localization language code loaded from plugins/DeadChest/localization/<language>.json
+  # Practical Bukkit defaults: en, fr, es, de, pt-br, pl, it, zh-cn
+  language: en
+
+updates:
+  # Enables automatic plugin update checks.
+  # true  = check for updates on startup
+  # false = disable update checks
+  auto-check: true
+
+chest:
+  # Controls who can open a DeadChest.
+  # true  = only the owner can open it, except bypass permission.
+  # false = any player can open it.
+  # Bypass permission: 'deadchest.chestPass'
+  owner-only-open: true
+
+  # DeadChest lifetime in seconds.
+  # 0 = no expiration (infinite)
+  duration-seconds: 300
+
+  # Protects DeadChest blocks from destruction (players/explosions).
+  # true  = protected
+  # false = breakable
+  indestructible: true
+
+  # Maximum number of active DeadChests per player.
+  # 0 = unlimited
+  # Note: players with 'deadchest.infinityChest' create infinite chests.
+  max-per-player: 15
+
+  # Item recovery mode when claiming a chest:
+  # - inventory-then-ground = fill inventory first, drop overflow
+  # - ground-drop           = drop everything on the ground
+  recovery-mode: inventory-then-ground
+
+  # Block type used to represent a DeadChest:
+  # chest | player-head | barrel | shulker-box | ender-chest
+  block-type: chest
+
+  # Behavior when the chest timer expires:
+  # true  = drop items on the ground
+  # false = remove chest contents
+  drop-items-on-timeout: false
+
+permissions:
+  # Require permission to generate a DeadChest on death.
+  # Required permission when true: 'deadchest.generate'
+  require-generate: false
+
+  # Require permission to claim/retrieve a DeadChest.
+  # Required permission when true: 'deadchest.get'
+  require-claim: false
+
+  # Require permission to run '/dc list' for own chests.
+  # Required permission when true: 'deadchest.list.own'
+  require-list-own: false
+
+maintenance:
+  # Removes all DeadChests when the server starts.
+  # true  = global cleanup on startup
+  # false = keep existing chests
+  cleanup-on-startup: false
+
+generation:
+  # Allow generation in Creative mode.
+  # false = no DeadChest if the player dies in Creative
+  allow-in-creative: true
+
+  # Allow generation when the player dies in lava.
+  allow-on-lava: true
+
+  # Allow generation when the player dies in water.
+  allow-on-water: true
+
+  # Allow generation when the player dies on rails.
+  allow-on-rails: true
+
+  # Allow generation when the player dies in a minecart.
+  allow-in-minecart: true
+
+  # Allow generation in The End worlds.
+  # false = no items are kept in The End
+  allow-in-end-worlds: true
+
+messages:
+  # Send DeadChest coordinates to the player on death.
+  display-position-on-death: true
+
+xp:
+  # Store player XP in the DeadChest.
+  # true  = no XP orbs dropped, XP is stored
+  # false = vanilla XP behavior
+  store-on-death: false
+
+  # Percentage of XP to store when store-on-death=true.
+  # 0   = store no XP
+  # 100 = store all XP
+  # >100 = possible but duplicates XP (not recommended)
+  store-percentage: 100
+
+pvp:
+  # Behavior for PvP deaths (killed by another player):
+  # true  = keep inventory, no DeadChest generated
+  # false = normal plugin behavior
+  keep-inventory-on-player-kill: false
+
+integrations:
+  worldguard:
+    # Enable WorldGuard region checks for generation allow/deny.
+    enabled: false
+
+    # Default value when no explicit DeadChest flag is found in a region.
+    # true  = allowed by default
+    # false = denied by default
+    default-allow: false
+
+durability:
+  # Durability loss applied to items on death (percentage of max durability).
+  # 0 = disabled
+  loss-on-death-percent: 0
+
+logging:
+  # Log each DeadChest creation to the server console.
+  deadchest-create-to-console: false
+
+visuals:
+  effect-animation:
+    # Visual particles orbiting around active DeadChests.
+    enabled: true
+
+    # Global effect style used for all DeadChests:
+    # soul | flame | ender
+    style: ender
+
+    # Orbit radius around the chest center (recommended: 0.5 to 1.2).
+    radius: 0.8
+
+    # Orbit speed multiplier (recommended: 1.0 to 3.0).
+    speed: 1.1
+
+  pickup-animation:
+    # Animation played when a player recovers a DeadChest.
+    enabled: true
+
+    # Bukkit particle name used for the pickup animation.
+    # Examples: TOTEM, END_ROD, FIREWORK, SOUL, FLAME
+    particle: FIREWORK
+
+    # Number of particles spawned on pickup.
+    count: 22
+
+    # Particle spread around the center.
+    offset-x: 0.45
+    offset-y: 0.5
+    offset-z: 0.45
+
+    # Particle extra/speed value.
+    speed: 0.08
+
+    # Vertical center offset from block base.
+    y-shift: 0.55
+
+  sound:
+    pickup:
+      # Sound played to the player when picking up the DeadChest.
+      enabled: true
+
+      # Bukkit sound name (example: ENTITY_EXPERIENCE_ORB_PICKUP).
+      name: ENTITY_PLAYER_LEVELUP
+
+      # Sound volume and pitch.
+      volume: 1.2
+      pitch: 1.0
+
+filters:
+  # World names where DeadChest generation is disabled.
+  excluded-worlds:
+    - excluded_world_example
+    - another_excluded_world_example
+
+  # Items excluded from DeadChest storage.
+  # These items are not kept on death.
+  # Use Bukkit Material names (example: DIAMOND_SWORD).
+  excluded-items:
+    - EXCLUDED_ITEM_EXAMPLE
+    - HEROBRINE
+
+  # Items ignored by DeadChest processing.
+  # Ignored items are not stored inside the DeadChest and keep vanilla death behavior.
+  # In practice, DeadChest leaves them alone so they can be dropped/handled by Minecraft or another plugin.
+  # '/dc ignore' edits this same list directly, so config and GUI always stay synchronized.
+  # Supported entries:
+  # - a Bukkit Material name, for example: DIAMOND
+  # - a serialized ItemStack, including item meta, written automatically by '/dc ignore'
+  # Useful for custom items managed by other plugins.
+  ignored-items:
+    - IGNORED_ITEM_EXAMPLE
+
+# --------------------------------------------------------------------------------------------------
+# Permission Reference
+# --------------------------------------------------------------------------------------------------
+# deadchest.admin         -> Access admin commands (reload, repair, removeall, removeinfinite, ignore).
+# deadchest.generate      -> Generate a DeadChest on player death (if require-generate is true).
+# deadchest.get           -> Claim/retrieve a DeadChest (if require-claim is true).
+# deadchest.list.own      -> List your own DeadChests with '/dc list' (if require-list-own is true).
+# deadchest.list.other    -> List another player's DeadChests with '/dc list <player>'.
+# deadchest.remove.own    -> Remove your own DeadChests with '/dc remove'.
+# deadchest.remove.other  -> Remove another player's DeadChests with '/dc remove <player>'.
+# deadchest.giveback      -> Give back another player's items with '/dc giveback <player>'.
+# deadchest.chestPass     -> Bypass owner-only chest access.
+# deadchest.infinityChest -> Create infinite DeadChests (not affected by duration-seconds timeout).
