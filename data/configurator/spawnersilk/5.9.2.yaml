@@ -1,4 +1,4 @@
-####################################################################################################
+###############################################################################################
 # SpawnerSilk Configuration
 #
 # Project pages:
@@ -9,7 +9,7 @@
 #   https://discordapp.com/invite/jCsvJxS
 #
 # Run '/sps reload' after editing this file to apply your changes.
-####################################################################################################
+###############################################################################################
 
 localization:
   # Language file loaded from plugins/SpawnerSilk/localization/<language>.json.
