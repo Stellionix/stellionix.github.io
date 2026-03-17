@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "deadchest": {
+      "name": "Deadchest",
+      "versions": {
+        "4.27.0": "data/configurator/deadchest/4.27.0.yml"
+      }
+    },
+    "spawnersilk": {
+      "name": "SpawnerSilk",
+      "versions": {
+        "5.9.2": "data/configurator/spawnersilk/5.9.2.yaml"
+      }
+    }
+  }
+}
