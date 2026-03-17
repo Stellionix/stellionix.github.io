@@ -58,8 +58,10 @@ let configCatalog = null;
 let activeConfigDocument = null;
 let activeConfigMeta = null;
 let configOutputDirty = false;
+let activeConfigHighlightPath = "";
 const yamlTextCache = new Map();
 const configFieldNodeMap = new Map();
+let configYamlLineMap = new Map();
 
 function getProjectCards() {
     return Array.from(document.querySelectorAll(".card[data-game]"));
@@ -937,26 +939,99 @@ function renderYamlNode(node, indent = 0) {
 }
 
 function renderYamlDocument(documentNode) {
-    const parts = [];
+    return renderYamlDocumentWithLineMap(documentNode).yaml;
+}
+
+function renderYamlDocumentWithLineMap(documentNode) {
+    const lines = [];
+    const lineMap = new Map();
 
     if (documentNode.preamble?.length) {
-        parts.push(documentNode.preamble.join("\n").trimEnd());
+        const preamble = documentNode.preamble.join("\n").trimEnd();
+        if (preamble) {
+            lines.push(...preamble.split("\n"));
+        }
     }
 
-    documentNode.entries.forEach((entry, index) => {
-        const rendered = renderYamlNode(entry, 0);
-        if (!rendered) {
+    documentNode.entries.forEach((entry) => {
+        const baseLine = lines.length + (lines.length > 0 ? 1 : 0);
+        const renderedLines = renderYamlNodeLines(entry, 0, "", lineMap, baseLine);
+        if (!renderedLines.length) {
             return;
         }
 
-        if (parts.length > 0 || index > 0) {
-            parts.push("");
+        if (lines.length > 0) {
+            lines.push("");
         }
 
-        parts.push(rendered);
+        lines.push(...renderedLines);
     });
 
-    return `${parts.join("\n").trim()}\n`;
+    configYamlLineMap = lineMap;
+    return {
+        yaml: lines.length ? `${lines.join("\n")}\n` : "",
+        lineMap
+    };
+}
+
+function renderYamlNodeLines(node, indent = 0, path = "", lineMap = new Map(), baseLine = 0) {
+    const rendered = renderYamlNode(node, indent);
+    if (!rendered) {
+        return [];
+    }
+
+    const currentPath = path ? `${path}.${node.key}` : node.key;
+    const lines = rendered.split("\n");
+    lineMap.set(currentPath, {
+        start: baseLine + 1,
+        end: baseLine + lines.length
+    });
+
+    if (node.type === "map") {
+        let nestedBaseLine = baseLine;
+        const objectHeaderLines = node.comments.length ? node.comments.length + 1 : 1;
+        nestedBaseLine += objectHeaderLines;
+
+        node.entries.forEach((entry, index) => {
+            if (index > 0) {
+                nestedBaseLine += 1;
+            }
+
+            const childLines = renderYamlNodeLines(entry, indent + 1, currentPath, lineMap, nestedBaseLine);
+            nestedBaseLine += childLines.length;
+        });
+    }
+
+    return lines;
+}
+
+function getActiveYamlLineRange() {
+    if (!activeConfigHighlightPath || configOutputDirty) {
+        return null;
+    }
+
+    return configYamlLineMap.get(activeConfigHighlightPath) ?? null;
+}
+
+function setActiveConfigHighlight(path = "") {
+    activeConfigHighlightPath = path || "";
+    syncActiveConfigFieldState();
+    updateConfigOutputHighlight();
+}
+
+function syncActiveConfigFieldState() {
+    if (!configuratorFormElement) {
+        return;
+    }
+
+    configuratorFormElement.querySelectorAll("[data-config-path]").forEach((input) => {
+        const container = input.closest(".config-field, .config-toggle");
+        if (!container) {
+            return;
+        }
+
+        container.classList.toggle("is-yaml-linked", input.dataset.configPath === activeConfigHighlightPath);
+    });
 }
 
 function updateNodeFromInput(input) {
@@ -1086,6 +1161,7 @@ function rebuildConfiguratorForm() {
     if (configuratorFormElement) {
         configuratorFormElement.innerHTML = renderConfigRoot(activeConfigDocument);
     }
+    syncActiveConfigFieldState();
     setupGeneratedConfigDropdowns();
 }
 
@@ -1155,14 +1231,26 @@ function updateConfigOutputHighlight() {
 
     const yaml = getConfigOutputValue() || " ";
     const lines = yaml.split(/\r?\n/);
+    const activeRange = getActiveYamlLineRange();
     configOutputHighlightElement.innerHTML = lines
-        .map((line) => highlightYamlLine(line))
-        .join("\n");
+        .map((line, index) => renderHighlightedYamlLine(line, index + 1, activeRange))
+        .join("");
     if (configOutputGutterElement) {
-        configOutputGutterElement.textContent = lines
-            .map((_, index) => String(index + 1))
-            .join("\n");
+        configOutputGutterElement.innerHTML = lines
+            .map((_, index) => renderYamlLineNumber(index + 1, activeRange))
+            .join("");
     }
+}
+
+function renderHighlightedYamlLine(line, lineNumber, activeRange) {
+    const isActive = activeRange && lineNumber >= activeRange.start && lineNumber <= activeRange.end;
+    const content = line ? highlightYamlLine(line) : "&nbsp;";
+    return `<span class="yaml-render-line${isActive ? " is-active" : ""}">${content}</span>`;
+}
+
+function renderYamlLineNumber(lineNumber, activeRange) {
+    const isActive = activeRange && lineNumber >= activeRange.start && lineNumber <= activeRange.end;
+    return `<span class="yaml-line-number${isActive ? " is-active" : ""}">${lineNumber}</span>`;
 }
 
 function applyYamlFromEditor() {
@@ -1174,7 +1262,7 @@ function applyYamlFromEditor() {
     try {
         activeConfigDocument = parseYamlDocument(yaml);
         rebuildConfiguratorForm();
-        setConfigOutputValue(renderYamlDocument(activeConfigDocument));
+        setConfigOutputValue(renderYamlDocumentWithLineMap(activeConfigDocument).yaml);
         updateConfiguratorState(`${activeConfigMeta?.name ?? "Preset"} ${activeConfigMeta?.version ?? ""}`.trim(), "Imported YAML");
         return true;
     } catch (error) {
@@ -1206,7 +1294,7 @@ function updateConfigOutput() {
         return;
     }
 
-    setConfigOutputValue(renderYamlDocument(activeConfigDocument));
+    setConfigOutputValue(renderYamlDocumentWithLineMap(activeConfigDocument).yaml);
     if (configOutputFilenameElement) {
         configOutputFilenameElement.textContent = "config.yml";
     }
@@ -1593,6 +1681,7 @@ function setupConfigurator() {
     configOutputElement?.addEventListener("input", () => {
         configOutputDirty = true;
         configOutputElement.dataset.dirty = "true";
+        setActiveConfigHighlight("");
         updateConfigOutputHighlight();
         resizeConfigOutput();
         updateConfiguratorState("Manual YAML edits pending. Click outside the editor to sync the form.", "Manual edit");
@@ -1602,10 +1691,15 @@ function setupConfigurator() {
         window.setTimeout(() => {
             configOutputDirty = true;
             configOutputElement.dataset.dirty = "true";
+            setActiveConfigHighlight("");
             updateConfigOutputHighlight();
             resizeConfigOutput();
             updateConfiguratorState("YAML pasted. Click outside the editor to import it into the builder.", "YAML pasted");
         }, 0);
+    });
+
+    configOutputElement?.addEventListener("focus", () => {
+        setActiveConfigHighlight("");
     });
 
     configOutputElement?.addEventListener("scroll", () => {
@@ -1641,12 +1735,49 @@ function setupConfigurator() {
 
         updateNodeFromInput(input);
         updateConfigOutput();
+        setActiveConfigHighlight(input.dataset.configPath ?? "");
+    });
+
+    configuratorFormElement?.addEventListener("focusin", (event) => {
+        const input = event.target.closest("[data-config-path]");
+        if (input) {
+            setActiveConfigHighlight(input.dataset.configPath ?? "");
+            return;
+        }
+
+        const trigger = event.target.closest("[data-config-generated-trigger]");
+        if (!trigger) {
+            return;
+        }
+
+        const hiddenInput = trigger.closest("[data-config-generated-dropdown]")?.querySelector('input[type="hidden"][data-config-path]');
+        setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
+    });
+
+    configuratorFormElement?.addEventListener("focusout", () => {
+        window.setTimeout(() => {
+            const focusedInput = configuratorFormElement.querySelector("[data-config-path]:focus");
+            if (focusedInput) {
+                setActiveConfigHighlight(focusedInput.dataset.configPath ?? "");
+                return;
+            }
+
+            const focusedTrigger = configuratorFormElement.querySelector("[data-config-generated-trigger]:focus");
+            if (focusedTrigger) {
+                const hiddenInput = focusedTrigger.closest("[data-config-generated-dropdown]")?.querySelector('input[type="hidden"][data-config-path]');
+                setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
+                return;
+            }
+
+            setActiveConfigHighlight("");
+        }, 0);
     });
 
     configuratorFormElement?.addEventListener("click", (event) => {
         const trigger = event.target.closest("[data-config-generated-trigger]");
         if (trigger) {
             const dropdown = trigger.closest("[data-config-generated-dropdown]");
+            const hiddenInput = dropdown?.querySelector('input[type="hidden"][data-config-path]');
             const isOpen = dropdown.classList.contains("is-open");
             configuratorFormElement.querySelectorAll("[data-config-generated-dropdown].is-open").forEach((item) => {
                 item.classList.remove("is-open");
@@ -1657,6 +1788,7 @@ function setupConfigurator() {
                 dropdown.classList.add("is-open");
                 trigger.setAttribute("aria-expanded", "true");
             }
+            setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
             return;
         }
 
@@ -1675,6 +1807,7 @@ function setupConfigurator() {
         syncGeneratedConfigDropdownSelection(dropdown);
         updateNodeFromInput(hiddenInput);
         updateConfigOutput();
+        setActiveConfigHighlight(hiddenInput.dataset.configPath ?? "");
         dropdown.classList.remove("is-open");
         dropdown.querySelector("[data-config-generated-trigger]")?.setAttribute("aria-expanded", "false");
     });
@@ -1693,6 +1826,7 @@ function setupConfigurator() {
 
         updateNodeFromInput(input);
         updateConfigOutput();
+        setActiveConfigHighlight(input.dataset.configPath ?? "");
     });
 
     configCopyButton?.addEventListener("click", async () => {
