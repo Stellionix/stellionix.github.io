@@ -24,6 +24,7 @@ const configOutputHighlightElement = document.getElementById("config-output-high
 const configOutputFilenameElement = document.getElementById("config-output-filename");
 const configCopyButton = document.getElementById("config-copy");
 const configDownloadButton = document.getElementById("config-download");
+const configOutputEditorElement = document.querySelector(".config-output-editor");
 
 const gameMeta = {
     minecraft: {
@@ -62,6 +63,8 @@ let activeConfigHighlightPath = "";
 const yamlTextCache = new Map();
 const configFieldNodeMap = new Map();
 let configYamlLineMap = new Map();
+let configOutputResizeTicking = false;
+let activeYamlScrollAnimation = 0;
 
 function getProjectCards() {
     return Array.from(document.querySelectorAll(".card[data-game]"));
@@ -819,14 +822,26 @@ function hasRenderableChildren(node) {
     return node.entries.some((entry) => entry.type === "scalar" || entry.type === "list" || hasRenderableChildren(entry));
 }
 
+function isReadonlyConfigField(path) {
+    const normalizedPath = String(path ?? "").trim().toLowerCase();
+    return normalizedPath === "config-version" || normalizedPath.endsWith(".config-version");
+}
+
 function renderNodeField(node, path) {
     const field = getFieldDefinition(node);
     const label = prettifyKey(node.key);
-    const note = node.comments.length ? `<div class="config-field-note">${commentLinesToHtml(node.comments)}</div>` : "";
+    const isReadonly = isReadonlyConfigField(path);
+    const baseNote = node.comments.length ? `<div class="config-field-note">${commentLinesToHtml(node.comments)}</div>` : "";
+    const readonlyNote = isReadonly ? `<div class="config-field-note">This preset value is displayed for reference and cannot be edited here.</div>` : "";
+    const note = `${baseNote}${readonlyNote}`;
     configFieldNodeMap.set(path, node);
 
     if (field.type === "boolean") {
         return `<label class="config-toggle"><input type="checkbox" data-config-path="${escapeHtml(path)}" ${node.value ? "checked" : ""}><span class="config-toggle-content"><span class="config-field-label">${escapeHtml(label)}</span>${note}</span></label>`;
+    }
+
+    if (isReadonly) {
+        return `<label class="config-field config-field-readonly"><span class="config-field-label">${escapeHtml(label)}</span><input class="config-field-input" type="text" data-config-path="${escapeHtml(path)}" value="${escapeHtml(String(node.value ?? ""))}" readonly aria-readonly="true" tabindex="-1">${note}</label>`;
     }
 
     if (field.type === "select") {
@@ -1013,10 +1028,15 @@ function getActiveYamlLineRange() {
     return configYamlLineMap.get(activeConfigHighlightPath) ?? null;
 }
 
-function setActiveConfigHighlight(path = "") {
+function setActiveConfigHighlight(path = "", { align = false, behavior = "smooth" } = {}) {
     activeConfigHighlightPath = path || "";
     syncActiveConfigFieldState();
     updateConfigOutputHighlight();
+    if (align && activeConfigHighlightPath) {
+        requestAnimationFrame(() => {
+            alignYamlHighlightToField(activeConfigHighlightPath, behavior);
+        });
+    }
 }
 
 function syncActiveConfigFieldState() {
@@ -1034,10 +1054,90 @@ function syncActiveConfigFieldState() {
     });
 }
 
+function syncYamlScrollMirrors(scrollTop) {
+    if (configOutputGutterElement) {
+        configOutputGutterElement.scrollTop = scrollTop;
+    }
+    if (configOutputHighlightElement) {
+        configOutputHighlightElement.scrollTop = scrollTop;
+    }
+}
+
+function scrollYamlOutputTo(nextScrollTop, behavior = "smooth") {
+    if (!configOutputElement) {
+        return;
+    }
+
+    if (activeYamlScrollAnimation) {
+        cancelAnimationFrame(activeYamlScrollAnimation);
+        activeYamlScrollAnimation = 0;
+    }
+
+    if (behavior !== "smooth" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        configOutputElement.scrollTop = nextScrollTop;
+        syncYamlScrollMirrors(nextScrollTop);
+        return;
+    }
+
+    const startScrollTop = configOutputElement.scrollTop;
+    const distance = nextScrollTop - startScrollTop;
+
+    if (Math.abs(distance) < 2) {
+        syncYamlScrollMirrors(nextScrollTop);
+        return;
+    }
+
+    const duration = 280;
+    const startTime = performance.now();
+
+    function frame(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const currentScrollTop = startScrollTop + (distance * eased);
+
+        configOutputElement.scrollTop = currentScrollTop;
+        syncYamlScrollMirrors(currentScrollTop);
+
+        if (progress < 1) {
+            activeYamlScrollAnimation = requestAnimationFrame(frame);
+            return;
+        }
+
+        activeYamlScrollAnimation = 0;
+        configOutputElement.scrollTop = nextScrollTop;
+        syncYamlScrollMirrors(nextScrollTop);
+    }
+
+    activeYamlScrollAnimation = requestAnimationFrame(frame);
+}
+
+function alignYamlHighlightToField(path, behavior = "smooth") {
+    if (!path || !configuratorFormElement || !configOutputElement || !configOutputHighlightElement) {
+        return;
+    }
+
+    const activeRange = configYamlLineMap.get(path);
+    if (!activeRange) {
+        return;
+    }
+
+    const lineHeight = Number.parseFloat(window.getComputedStyle(configOutputElement).lineHeight) || 24;
+    const targetLineTop = Math.max(0, (activeRange.start - 1) * lineHeight);
+    const centeredOffset = Math.max(0, (configOutputElement.clientHeight - lineHeight) / 2);
+    const maxScrollTop = Math.max(0, configOutputElement.scrollHeight - configOutputElement.clientHeight);
+    const nextScrollTop = Math.min(maxScrollTop, Math.max(0, targetLineTop - centeredOffset));
+
+    scrollYamlOutputTo(nextScrollTop, behavior);
+}
+
 function updateNodeFromInput(input) {
     const path = input.dataset.configPath;
     const node = configFieldNodeMap.get(path);
     if (!node) {
+        return;
+    }
+
+    if (isReadonlyConfigField(path)) {
         return;
     }
 
@@ -1166,18 +1266,41 @@ function rebuildConfiguratorForm() {
 }
 
 function resizeConfigOutput() {
-    if (!configOutputElement || !("style" in configOutputElement)) {
+    if (!configOutputElement || !configOutputEditorElement || !("style" in configOutputElement)) {
         return;
     }
 
-    configOutputElement.style.height = "auto";
-    configOutputElement.style.height = `${configOutputElement.scrollHeight}px`;
+    if (window.innerWidth <= 960) {
+        document.documentElement.style.removeProperty("--config-output-editor-height");
+        return;
+    }
+
+    const editorTop = configOutputEditorElement.getBoundingClientRect().top;
+    const bottomGap = 28;
+    const minHeight = 420;
+    const maxHeight = 960;
+    const availableHeight = Math.max(minHeight, Math.min(maxHeight, Math.floor(window.innerHeight - editorTop - bottomGap)));
+
+    document.documentElement.style.setProperty("--config-output-editor-height", `${availableHeight}px`);
+    configOutputElement.style.height = "";
     if (configOutputGutterElement) {
-        configOutputGutterElement.style.height = `${configOutputElement.scrollHeight}px`;
+        configOutputGutterElement.style.height = "";
     }
     if (configOutputHighlightElement) {
-        configOutputHighlightElement.style.height = `${configOutputElement.scrollHeight}px`;
+        configOutputHighlightElement.style.height = "";
     }
+}
+
+function requestConfigOutputResize() {
+    if (configOutputResizeTicking) {
+        return;
+    }
+
+    configOutputResizeTicking = true;
+    requestAnimationFrame(() => {
+        configOutputResizeTicking = false;
+        resizeConfigOutput();
+    });
 }
 
 function highlightYamlLine(line) {
@@ -1354,9 +1477,11 @@ function populateConfigVersionOptions(pluginSlug, preferredVersion = "") {
     const versions = Object.keys(versionMap);
     const dropdown = configVersionSelect.closest("[data-config-dropdown]");
     const menu = dropdown?.querySelector(".filter-dropdown-menu");
-    if (!menu) {
+    if (!dropdown || !menu) {
         return;
     }
+
+    dropdown.dataset.locked = "true";
 
     menu.innerHTML = versions
         .map((version, index) => `<button class="filter-dropdown-option${index === 0 ? " is-selected" : ""}" type="button" role="option" data-config-option data-value="${escapeHtml(version)}" aria-selected="${index === 0 ? "true" : "false"}"><span>${escapeHtml(version)}</span></button>`)
@@ -1375,20 +1500,28 @@ function populateConfigVersionOptions(pluginSlug, preferredVersion = "") {
 function syncConfigDropdownSelection(dropdown) {
     const hiddenInput = dropdown?.querySelector('input[type="hidden"]');
     const label = dropdown?.querySelector("[data-config-label]");
+    const trigger = dropdown?.querySelector("[data-config-trigger]");
     const options = dropdown ? Array.from(dropdown.querySelectorAll("[data-config-option]")) : [];
 
-    if (!hiddenInput || !label || !options.length) {
+    if (!hiddenInput || !label) {
         return;
     }
 
-    const selectedOption = options.find((option) => (option.dataset.value ?? "") === hiddenInput.value) ?? options[0];
-    label.textContent = selectedOption.querySelector("span:last-child")?.textContent?.trim() ?? selectedOption.textContent.trim();
+    const selectedOption = options.find((option) => (option.dataset.value ?? "") === hiddenInput.value) ?? options[0] ?? null;
+    label.textContent = selectedOption?.querySelector("span:last-child")?.textContent?.trim() ?? selectedOption?.textContent.trim() ?? hiddenInput.value;
 
     options.forEach((option) => {
         const isSelected = option === selectedOption;
         option.classList.toggle("is-selected", isSelected);
         option.setAttribute("aria-selected", isSelected ? "true" : "false");
     });
+
+    if (trigger) {
+        const isLocked = dropdown?.dataset.locked === "true";
+        trigger.disabled = isLocked;
+        trigger.setAttribute("aria-disabled", isLocked ? "true" : "false");
+        trigger.tabIndex = isLocked ? -1 : 0;
+    }
 }
 
 function setupConfigDropdowns() {
@@ -1413,6 +1546,10 @@ function setupConfigDropdowns() {
         }
 
         trigger.addEventListener("click", () => {
+            if (dropdown.dataset.locked === "true" || trigger.disabled) {
+                return;
+            }
+
             const isOpen = dropdown.classList.contains("is-open");
             configDropdowns.forEach(closeDropdown);
 
@@ -1423,6 +1560,10 @@ function setupConfigDropdowns() {
         });
 
         dropdown.addEventListener("click", (event) => {
+            if (dropdown.dataset.locked === "true") {
+                return;
+            }
+
             const option = event.target.closest("[data-config-option]");
             if (!option) {
                 return;
@@ -1735,13 +1876,13 @@ function setupConfigurator() {
 
         updateNodeFromInput(input);
         updateConfigOutput();
-        setActiveConfigHighlight(input.dataset.configPath ?? "");
+        setActiveConfigHighlight(input.dataset.configPath ?? "", { align: true });
     });
 
     configuratorFormElement?.addEventListener("focusin", (event) => {
         const input = event.target.closest("[data-config-path]");
         if (input) {
-            setActiveConfigHighlight(input.dataset.configPath ?? "");
+            setActiveConfigHighlight(input.dataset.configPath ?? "", { align: true });
             return;
         }
 
@@ -1751,21 +1892,21 @@ function setupConfigurator() {
         }
 
         const hiddenInput = trigger.closest("[data-config-generated-dropdown]")?.querySelector('input[type="hidden"][data-config-path]');
-        setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
+        setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "", { align: true });
     });
 
     configuratorFormElement?.addEventListener("focusout", () => {
         window.setTimeout(() => {
             const focusedInput = configuratorFormElement.querySelector("[data-config-path]:focus");
             if (focusedInput) {
-                setActiveConfigHighlight(focusedInput.dataset.configPath ?? "");
+                setActiveConfigHighlight(focusedInput.dataset.configPath ?? "", { align: true, behavior: "smooth" });
                 return;
             }
 
             const focusedTrigger = configuratorFormElement.querySelector("[data-config-generated-trigger]:focus");
             if (focusedTrigger) {
                 const hiddenInput = focusedTrigger.closest("[data-config-generated-dropdown]")?.querySelector('input[type="hidden"][data-config-path]');
-                setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
+                setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "", { align: true, behavior: "smooth" });
                 return;
             }
 
@@ -1788,7 +1929,7 @@ function setupConfigurator() {
                 dropdown.classList.add("is-open");
                 trigger.setAttribute("aria-expanded", "true");
             }
-            setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "");
+            setActiveConfigHighlight(hiddenInput?.dataset.configPath ?? "", { align: true });
             return;
         }
 
@@ -1807,7 +1948,7 @@ function setupConfigurator() {
         syncGeneratedConfigDropdownSelection(dropdown);
         updateNodeFromInput(hiddenInput);
         updateConfigOutput();
-        setActiveConfigHighlight(hiddenInput.dataset.configPath ?? "");
+        setActiveConfigHighlight(hiddenInput.dataset.configPath ?? "", { align: true });
         dropdown.classList.remove("is-open");
         dropdown.querySelector("[data-config-generated-trigger]")?.setAttribute("aria-expanded", "false");
     });
@@ -1826,7 +1967,7 @@ function setupConfigurator() {
 
         updateNodeFromInput(input);
         updateConfigOutput();
-        setActiveConfigHighlight(input.dataset.configPath ?? "");
+        setActiveConfigHighlight(input.dataset.configPath ?? "", { align: true });
     });
 
     configCopyButton?.addEventListener("click", async () => {
@@ -1893,6 +2034,9 @@ function setupConfigurator() {
     const routeSelection = getConfiguratorRouteSelection();
     openConfigPreset(routeSelection.plugin || configPluginSelect.value, routeSelection.version || configVersionSelect.value);
     resizeConfigOutput();
+    window.addEventListener("load", requestConfigOutputResize, { once: true });
+    window.addEventListener("resize", requestConfigOutputResize);
+    window.addEventListener("scroll", requestConfigOutputResize, { passive: true });
 }
 
 async function initProjects() {

@@ -13,6 +13,7 @@
     --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
     --hero-parallax-offset: 0px;
     --section-scroll-offset: 92px;
+    --config-output-editor-height: clamp(420px, 70vh, 860px);
 }
 
 * {
@@ -590,6 +591,12 @@ body.is-page-ready .site-header {
     top: 102px;
 }
 
+.config-output-panel {
+    position: sticky;
+    top: 102px;
+    align-self: start;
+}
+
 .configurator-panel-head,
 .config-output-head {
     display: flex;
@@ -712,6 +719,30 @@ body.is-page-ready .site-header {
     resize: vertical;
 }
 
+.config-field-readonly .config-field-input {
+    cursor: default;
+    color: rgba(246, 247, 255, 0.9);
+    border-color: rgba(87, 217, 255, 0.12);
+    background:
+        linear-gradient(135deg, rgba(87, 217, 255, 0.08), rgba(176, 124, 255, 0.06)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+        rgba(255, 255, 255, 0.025);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.config-field-readonly .config-field-input:focus {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 10px 20px rgba(0, 0, 0, 0.12);
+    border-color: rgba(87, 217, 255, 0.12);
+    background:
+        linear-gradient(135deg, rgba(87, 217, 255, 0.08), rgba(176, 124, 255, 0.06)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+        rgba(255, 255, 255, 0.025);
+}
+
 .config-group {
     display: grid;
     gap: 14px;
@@ -806,7 +837,7 @@ body.is-page-ready .site-header {
     grid-template-columns: auto minmax(0, 1fr);
     width: 100%;
     min-width: 0;
-    min-height: 480px;
+    height: var(--config-output-editor-height);
     border-radius: 20px;
     background: rgba(6, 10, 24, 0.88);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -817,7 +848,7 @@ body.is-page-ready .site-header {
 .config-output,
 .config-output-highlight {
     margin: 0;
-    min-height: 480px;
+    min-height: 100%;
     font: 0.92rem/1.7 "Cascadia Code", "Consolas", monospace;
     white-space: pre;
     tab-size: 2;
@@ -837,12 +868,15 @@ body.is-page-ready .site-header {
 .config-output-code {
     position: relative;
     min-width: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
 .config-output,
 .config-output-highlight {
     padding: 18px 18px 18px 4px;
     width: 100%;
+    height: 100%;
 }
 
 .config-output-highlight {
@@ -875,24 +909,48 @@ body.is-page-ready .site-header {
     background: transparent;
     border: 0;
     color: transparent;
-    resize: vertical;
+    resize: none;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     outline: none;
     caret-color: var(--accent);
     -webkit-text-fill-color: transparent;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(87, 217, 255, 0.78) rgba(12, 16, 34, 0.92);
 }
 
 .config-output::selection {
     background: rgba(87, 217, 255, 0.22);
 }
 
-.config-output::-webkit-scrollbar,
-.config-output-highlight::-webkit-scrollbar {
-    display: none;
-    height: 0;
-    width: 0;
+.config-output::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.config-output::-webkit-scrollbar-track {
+    background:
+        linear-gradient(180deg, rgba(7, 11, 24, 0.96), rgba(13, 11, 32, 0.92));
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.config-output::-webkit-scrollbar-corner {
+    background: rgba(9, 11, 25, 0.96);
+}
+
+.config-output::-webkit-scrollbar-thumb {
+    border: 2px solid rgba(8, 10, 23, 0.94);
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(87, 217, 255, 0.94), rgba(176, 124, 255, 0.82));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(87, 217, 255, 0.12);
+}
+
+.config-output::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg, rgba(122, 229, 255, 1), rgba(191, 148, 255, 0.92));
 }
 
 .yaml-comment {
@@ -1121,6 +1179,34 @@ body.is-page-ready .site-header {
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.08),
         0 16px 30px rgba(87, 217, 255, 0.12);
+}
+
+.config-dropdown[data-locked="true"] .filter-select-wrap {
+    cursor: default;
+    transform: none;
+    opacity: 0.82;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 10px 18px rgba(0, 0, 0, 0.14);
+}
+
+.config-dropdown[data-locked="true"] .filter-select-wrap:hover,
+.config-dropdown[data-locked="true"] .filter-select-wrap:focus-within {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.08);
+    background:
+        linear-gradient(135deg, rgba(87, 217, 255, 0.12), rgba(176, 124, 255, 0.09)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+        rgba(255, 255, 255, 0.03);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 10px 18px rgba(0, 0, 0, 0.14);
+}
+
+.config-dropdown[data-locked="true"] .filter-select-wrap::after,
+.config-dropdown[data-locked="true"] .filter-select-wrap::before {
+    opacity: 0.45;
 }
 
 .filter-select-icon-wrap,
@@ -2275,14 +2361,17 @@ body.is-page-ready .site-header {
     }
 
     .config-output {
-        min-height: 320px;
         padding: 14px 14px 14px 4px;
         font-size: 0.84rem;
     }
 
+    .config-output-editor {
+        height: 320px;
+    }
+
     .config-output-highlight,
     .config-output-gutter {
-        min-height: 320px;
+        min-height: 100%;
         font-size: 0.84rem;
     }
 
