@@ -52,7 +52,7 @@
     "game": "minecraft",
     "price": "free",
     "compatibility": ["bukkit", "spigot", "paper", "purpur"],
-    "downloads": ["curseforge", "bukkit"],
+    "downloads": ["modrinth", "curseforge", "bukkit"],
     "logo": {
       "src": "assets/plugin-spawnersilk.png",
       "alt": "SpawnerSilk logo"
@@ -64,7 +64,8 @@
     "stats": {
       "kind": "downloads",
       "sources": [
-        "https://img.shields.io/curseforge/dt/322295?logo=curseforge&label=CurseForge%20downloads"
+        "https://img.shields.io/curseforge/dt/322295?logo=curseforge&label=CurseForge%20downloads",
+        "https://img.shields.io/modrinth/dt/spawnersilk?logo=modrinth&label=Modrinth%20downloads"
       ]
     },
     "secondaryLinks": [
@@ -78,6 +79,10 @@
       }
     ],
     "downloadLinks": [
+      {
+        "platform": "modrinth",
+        "href": "https://modrinth.com/plugin/spawnersilk"
+      },
       {
         "platform": "curseforge",
         "href": "https://www.curseforge.com/minecraft/bukkit-plugins/spawnersilk"
@@ -94,7 +99,7 @@
     "game": "minecraft",
     "price": "free",
     "compatibility": ["bukkit", "spigot", "paper", "purpur"],
-    "downloads": ["curseforge", "bukkit"],
+    "downloads": ["modrinth", "curseforge", "bukkit"],
     "logo": {
       "src": "assets/plugin-mobsmanager.png",
       "alt": "MobsManager logo"
@@ -106,7 +111,8 @@
     "stats": {
       "kind": "downloads",
       "sources": [
-        "https://img.shields.io/curseforge/dt/322365?logo=curseforge&label=CurseForge%20downloads"
+        "https://img.shields.io/curseforge/dt/322365?logo=curseforge&label=CurseForge%20downloads",
+        "https://img.shields.io/modrinth/dt/mobsmanager?logo=modrinth&label=Modrinth%20downloads"
       ]
     },
     "secondaryLinks": [
@@ -120,6 +126,10 @@
       }
     ],
     "downloadLinks": [
+      {
+        "platform": "modrinth",
+        "href": "https://modrinth.com/plugin/mobsmanager"
+      },
       {
         "platform": "curseforge",
         "href": "https://www.curseforge.com/minecraft/bukkit-plugins/mobsmanager"
