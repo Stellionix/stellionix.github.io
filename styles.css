@@ -14,6 +14,9 @@
     --hero-parallax-offset: 0px;
     --section-scroll-offset: 92px;
     --config-output-editor-height: clamp(420px, 70vh, 860px);
+    --page-max-width: 1600px;
+    --header-max-width: 1480px;
+    --page-gutter: 32px;
 }
 
 * {
@@ -62,7 +65,7 @@ a {
 }
 
 .page {
-    width: min(1380px, calc(100% - 32px));
+    width: min(var(--page-max-width), calc(100% - var(--page-gutter)));
     margin: 0 auto;
     opacity: 1;
     transform: translateY(0);
@@ -115,7 +118,7 @@ body.is-page-ready .site-header {
 }
 
 .header-inner {
-    width: min(1280px, calc(100% - 32px));
+    width: min(var(--header-max-width), calc(100% - var(--page-gutter)));
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -1383,8 +1386,8 @@ body.is-page-ready .site-header {
 .card {
     display: flex;
     flex-direction: column;
-    width: min(100%, 1080px);
-    margin-inline: auto;
+    width: 100%;
+    margin-inline: 0;
     gap: 18px;
     padding: 26px;
     border-radius: 24px;
@@ -1410,8 +1413,8 @@ body.is-page-ready .site-header {
 }
 
 .filters-empty {
-    width: min(100%, 1080px);
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     padding: 18px 20px;
     border-radius: 18px;
     color: var(--muted);
