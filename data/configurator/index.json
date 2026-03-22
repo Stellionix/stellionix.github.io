@@ -1,9 +1,28 @@
 {
   "plugins": {
+    "cubeball": {
+      "name": "Cubeball",
+      "versions": {
+        "1.4.1": "data/configurator/cubeball/1.4.1.yml"
+      }
+    },
     "deadchest": {
       "name": "Deadchest",
       "versions": {
+        "4.28.0": "data/configurator/deadchest/4.28.0.yml",
         "4.27.0": "data/configurator/deadchest/4.27.0.yml"
+      }
+    },
+    "mendingenchant": {
+      "name": "MendingEnchant",
+      "versions": {
+        "1.7.0": "data/configurator/mendingenchant/1.7.0.yml"
+      }
+    },
+    "redstoneme": {
+      "name": "RedStoneMe",
+      "versions": {
+        "3.0.1": "data/configurator/redstoneme/3.0.1.yml"
       }
     },
     "spawnersilk": {

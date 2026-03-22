@@ -822,26 +822,14 @@ function hasRenderableChildren(node) {
     return node.entries.some((entry) => entry.type === "scalar" || entry.type === "list" || hasRenderableChildren(entry));
 }
 
-function isReadonlyConfigField(path) {
-    const normalizedPath = String(path ?? "").trim().toLowerCase();
-    return normalizedPath === "config-version" || normalizedPath.endsWith(".config-version");
-}
-
 function renderNodeField(node, path) {
     const field = getFieldDefinition(node);
     const label = prettifyKey(node.key);
-    const isReadonly = isReadonlyConfigField(path);
-    const baseNote = node.comments.length ? `<div class="config-field-note">${commentLinesToHtml(node.comments)}</div>` : "";
-    const readonlyNote = isReadonly ? `<div class="config-field-note">This preset value is displayed for reference and cannot be edited here.</div>` : "";
-    const note = `${baseNote}${readonlyNote}`;
+    const note = node.comments.length ? `<div class="config-field-note">${commentLinesToHtml(node.comments)}</div>` : "";
     configFieldNodeMap.set(path, node);
 
     if (field.type === "boolean") {
         return `<label class="config-toggle"><input type="checkbox" data-config-path="${escapeHtml(path)}" ${node.value ? "checked" : ""}><span class="config-toggle-content"><span class="config-field-label">${escapeHtml(label)}</span>${note}</span></label>`;
-    }
-
-    if (isReadonly) {
-        return `<label class="config-field config-field-readonly"><span class="config-field-label">${escapeHtml(label)}</span><input class="config-field-input" type="text" data-config-path="${escapeHtml(path)}" value="${escapeHtml(String(node.value ?? ""))}" readonly aria-readonly="true" tabindex="-1">${note}</label>`;
     }
 
     if (field.type === "select") {
@@ -1137,10 +1125,6 @@ function updateNodeFromInput(input) {
         return;
     }
 
-    if (isReadonlyConfigField(path)) {
-        return;
-    }
-
     if (node.type === "list") {
         node.items = input.value
             .split(/\r?\n/)
@@ -1419,8 +1403,14 @@ function updateConfigOutput() {
 
     setConfigOutputValue(renderYamlDocumentWithLineMap(activeConfigDocument).yaml);
     if (configOutputFilenameElement) {
-        configOutputFilenameElement.textContent = "config.yml";
+        configOutputFilenameElement.textContent = getActiveConfigFilename();
     }
+}
+
+function getActiveConfigFilename() {
+    const path = activeConfigMeta?.path ?? "";
+    const fileName = path.split("/").pop()?.trim();
+    return fileName || "config.yml";
 }
 
 async function loadTextFile(path) {
@@ -1481,7 +1471,7 @@ function populateConfigVersionOptions(pluginSlug, preferredVersion = "") {
         return;
     }
 
-    dropdown.dataset.locked = "true";
+    dropdown.dataset.locked = versions.length <= 1 ? "true" : "false";
 
     menu.innerHTML = versions
         .map((version, index) => `<button class="filter-dropdown-option${index === 0 ? " is-selected" : ""}" type="button" role="option" data-config-option data-value="${escapeHtml(version)}" aria-selected="${index === 0 ? "true" : "false"}"><span>${escapeHtml(version)}</span></button>`)
@@ -2000,7 +1990,7 @@ function setupConfigurator() {
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
         anchor.href = url;
-        anchor.download = "config.yml";
+        anchor.download = getActiveConfigFilename();
         document.body.appendChild(anchor);
         anchor.click();
         anchor.remove();

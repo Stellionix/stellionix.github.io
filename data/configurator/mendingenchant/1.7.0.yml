@@ -1,0 +1,83 @@
+####################################################################################################
+# MendingEnchant Configuration
+#
+# Plugin page and documentation:
+#   https://dev.bukkit.org/projects/mendingenchant
+#
+# Support (Discord):
+#   https://discordapp.com/invite/jCsvJxS
+#
+####################################################################################################
+
+updater:
+  # Enables automatic update checks and downloads.
+  enabled: true
+
+localization:
+  # Language file loaded from plugins/MendingEnchant/localization/<locale>.json
+  locale: en_US
+
+enchanting:
+  probabilities:
+    # Chance to receive Mending at enchant level 30.
+    # Use a value between 0.0 and 100.0.
+    # Other enchanting levels are scaled from this value.
+    default: 6.0
+
+    # Same logic as 'default', but applied when the player has:
+    # mendingenchant.custom1
+    custom-permission-1: 12.0
+
+    # Applied when the player has:
+    # mendingenchant.custom2
+    custom-permission-2: 18.0
+
+    # Applied when the player has:
+    # mendingenchant.custom3
+    custom-permission-3: 24.0
+
+  pity:
+    # Increases the chance to get Mending after repeated failures.
+    enabled: false
+
+    # Extra percentage points added after each failed enchanting attempt.
+    bonus-per-failure: 2.0
+
+    # Maximum bonus granted by the pity system.
+    max-bonus: 30.0
+
+  item-filter:
+    # Available modes: disabled, whitelist, blacklist
+    # disabled  -> all items are allowed
+    # whitelist -> only listed materials are allowed
+    # blacklist -> listed materials are blocked
+    mode: disabled
+
+    # Bukkit Material names used by the selected mode.
+    # Material names must match the Spigot/Paper enum exactly.
+    # Example:
+    # materials:
+    #   - BOW
+    #   - ELYTRA
+    #   - DIAMOND_PICKAXE
+    materials: []
+
+world-filter:
+  # Available modes: disabled, whitelist, blacklist
+  # disabled  -> all worlds are allowed
+  # whitelist -> only listed worlds are allowed
+  # blacklist -> listed worlds are blocked
+  mode: disabled
+
+  # World names where the plugin is allowed or blocked, depending on the mode.
+  # Example:
+  # worlds:
+  #   - world
+  #   - world_nether
+  #   - mining
+  worlds: []
+
+fishing:
+  # Chance to receive a Mending book while fishing.
+  # Use a value between 0.0 and 100.0.
+  probability: 5.0
